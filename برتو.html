@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shahd Kordy | Data Analytics Engineer</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons (Vanilla JS version) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020617;
+            color: #e2e8f0;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* Custom Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes slow-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes shine {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(100%); }
+        }
+        
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-spin-slow { animation: slow-spin 20s linear infinite; }
+        .hologram-shine:hover::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+            transform: skewX(-25deg) translateX(-150%);
+            animation: shine 1s;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4; 
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- Setup ---
+        const { useState, useEffect, useRef } = React;
+
+        // --- ICON FIX: Create React Components from Lucide Definitions ---
+        const createIconComponent = (iconName) => ({ color = "currentColor", size = 24, className = "", ...props }) => {
+            const iconData = lucide.icons[iconName];
+            if (!iconData) return null;
+
+            return (
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width={size}
+                    height={size}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke={color}
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className={`lucide lucide-${iconName} ${className}`}
+                    {...props}
+                >
+                    {iconData.map(([tag, attrs], index) => {
+                        return React.createElement(tag, { ...attrs, key: index });
+                    })}
+                </svg>
+            );
+        };
+
+        // List of icons used in the app
+        const iconNames = [
+            "BarChart3", "Database", "Code2", "BrainCircuit", "Presentation", "Briefcase", 
+            "GraduationCap", "Mail", "Phone", "Linkedin", "MapPin", "Award", "Terminal", 
+            "ChevronDown", "ExternalLink", "Layers", "PieChart", "MessageSquare", 
+            "Sparkles", "X", "Send", "Bot", "CheckCircle2", "FileBadge", "Menu"
+        ];
+
+        // Generate the Icon Components map
+        const Icons = iconNames.reduce((acc, name) => {
+            acc[name] = createIconComponent(name);
+            return acc;
+        }, {});
+
+        // Destructure Icons for easy use
+        const { 
+            BarChart3, Database, Code2, BrainCircuit, Presentation, Briefcase, 
+            GraduationCap, Mail, Phone, Linkedin, MapPin, Award, Terminal, 
+            ChevronDown, ExternalLink, Layers, PieChart, MessageSquare, 
+            Sparkles, X, Send, Bot, CheckCircle2, FileBadge, Menu 
+        } = Icons;
+
+        // --- Gemini Configuration ---
+        const apiKey = ""; // Environment will inject key if available, else empty.
+
+        const callGemini = async (prompt, systemInstruction = "") => {
+            try {
+                // If no API key is set (client-side demo), return a mock response to prevent errors
+                if (!apiKey) {
+                    return new Promise(resolve => setTimeout(() => {
+                        resolve("I am in demo mode inside the HTML file. In a real deployment with an API Key, I would analyze this data using Gemini AI to provide specific insights about Shahd's work!");
+                    }, 1500));
+                }
+
+                const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined,
+                    }),
+                }
+                );
+
+                if (!response.ok) throw new Error(`API call failed: ${response.statusText}`);
+                const data = await response.json();
+                return data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                return "AI Service Unavailable (Check API Key).";
+            }
+        };
+
+        // --- Data ---
+        const personalInfo = {
+            name: "Shahd Kordy",
+            roles: ["Data Analytics Engineer", "Instructor", "Python Developer", "Data Storyteller","SHAHD M KORDY"],
+            location: "Egypt",
+            email: "shahdmkordy6@gmail.com",
+            phone: "+201117291557",
+            summary: "Transforming raw data into strategic business insights using Python, SQL, and Power BI. Experienced in the full data lifecycle—from ETL and cleaning to advanced modeling and dashboard creation."
+        };
+
+        const skills = [
+            { name: "Python (Pandas, NumPy)", level: 90 },
+            { name: "SQL (T-SQL) & Databases", level: 85 },
+            { name: "Power BI & DAX", level: 95 },
+            { name: "Tableau", level: 80 },
+            { name: "Excel (Power Query)", level: 95 },
+            { name: "Machine Learning (Scikit-learn)", level: 75 },
+        ];
+
+        const experience = [
+            {
+                role: "Data Analyst",
+                company: "Hwyt Bytk (Saudi Company)",
+                period: "10/2025 - Present",
+                type: "Remote",
+                desc: "Designed rigorous data cleaning workflows (100% accuracy). Developed dynamic dashboards for Sales KPIs. Automating commission logic.",
+                icon: Database
+            },
+            {
+                role: "Coding & Robotics Instructor",
+                company: "Scientific Center",
+                period: "07/2025 - Present",
+                type: "On Site",
+                desc: "Developed custom tracking tools for student performance. Generated weekly analytical reports to inform curriculum adjustments.",
+                icon: Code2
+            },
+            {
+                role: "Coding & AI Instructor",
+                company: "Hi DeepAI",
+                period: "02/2025 - 10/2025",
+                type: "On Site",
+                desc: "Delivered 50+ hours of Python training. Tailored educational materials based on initial skill assessments.",
+                icon: BrainCircuit
+            }
+        ];
+
+        const education = [
+            {
+                degree: "B.Sc. Computer Science",
+                school: "Nahda University (NUB)",
+                grade: "Very Good",
+                period: "2021 - 2025",
+                detail: "Graduation Project: Tracelet (1st Place, Excellent) - Child safety system with AI & Geofencing."
+            }
+        ];
+
+        const certifications = [
+            {
+                title: "Data Analysis Track",
+                issuer: "DEPI",
+                desc: "Intensive 6-month scholarship covering full data lifecycle, ETL, SQL, Python, and Power BI.",
+                icon: Award
+            },
+            {
+                title: "Data Analyst (Python)",
+                issuer: "DataCamp",
+                desc: "Comprehensive track on Python data science foundation, Pandas, NumPy, and Seaborn.",
+                icon: Terminal
+            },
+            {
+                title: "Tableau Visualization",
+                issuer: "DataCamp",
+                desc: "Specialized training on connecting data sources and interactive dashboard design.",
+                icon: BarChart3
+            },
+            {
+                title: "Instructional Design",
+                issuer: "Mahara Tech-ITI",
+                desc: "Specialized courses in Gamification, ADDIE Model, and AI ethics in education.",
+                icon: Presentation
+            }
+        ];
+
+        const projects = [
+            {
+                title: "ProHost Hotel Analytics",
+                tech: "Power BI, DAX, SQL",
+                desc: "Engineered a full-cycle hotel analytics solution inspired by Opera PMS. Created 3 interactive dashboards (Finance, Reservations, NPS).",
+                category: "Business Intelligence"
+            },
+            {
+                title: "Financial Fraud Detection",
+                tech: "Python, Sklearn, AutoEncoder",
+                desc: "Built an anomaly detection model using Isolation Forest. Enhanced financial security by accurately flagging irregular transaction patterns.",
+                category: "Data Science"
+            },
+            {
+                title: "Customer Segmentation",
+                tech: "Python, K-Means",
+                desc: "Applied clustering algorithms to segment customers based on purchasing behavior to support targeted marketing campaigns.",
+                category: "Machine Learning"
+            },
+            {
+                title: "Tracelet (Grad Project)",
+                tech: "IoT, AI, Mobile App",
+                desc: "Award-winning child safety system. Features real-time geofencing, multi-child tracking on a single map, and AI-powered assistance.",
+                category: "Full Stack / IoT"
+            }
+        ];
+
+        // --- Helper Components ---
+
+        const TypewriterEffect = ({ words }) => {
+            const [index, setIndex] = useState(0);
+            const [subIndex, setSubIndex] = useState(0);
+            const [reverse, setReverse] = useState(false);
+            const [blink, setBlink] = useState(true);
+
+            useEffect(() => {
+                const timeout2 = setTimeout(() => setBlink((prev) => !prev), 500);
+                return () => clearTimeout(timeout2);
+            }, [blink]);
+
+            useEffect(() => {
+                if (index === words.length) return;
+                if (subIndex === words[index].length + 1 && !reverse) {
+                    setTimeout(() => setReverse(true), 1000);
+                    return;
+                }
+                if (subIndex === 0 && reverse) {
+                    setReverse(false);
+                    setIndex((prev) => (prev + 1) % words.length);
+                    return;
+                }
+                const timeout = setTimeout(() => {
+                    setSubIndex((prev) => prev + (reverse ? -1 : 1));
+                }, Math.max(reverse ? 75 : subIndex === words[index].length ? 1000 : 150, Math.random() * 350));
+                return () => clearTimeout(timeout);
+            }, [subIndex, index, reverse, words]);
+
+            return (
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 border-r-2 border-cyan-400 pr-1">
+                    {`${words[index].substring(0, subIndex)}${blink ? "" : " "}`}
+                </span>
+            );
+        };
+
+        const AnimatedSection = ({ children, className = "" }) => {
+            const [isVisible, setIsVisible] = useState(false);
+            const domRef = useRef();
+            useEffect(() => {
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => setIsVisible(entry.isIntersecting));
+                });
+                if (domRef.current) observer.observe(domRef.current);
+                return () => domRef.current && observer.unobserve(domRef.current);
+            }, []);
+            return (
+                <div ref={domRef} className={`transition-all duration-1000 transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} ${className}`}>
+                    {children}
+                </div>
+            );
+        };
+
+        const SkillBar = ({ skill }) => {
+            const [width, setWidth] = useState(0);
+            const barRef = useRef();
+            useEffect(() => {
+                const observer = new IntersectionObserver(entries => {
+                    if (entries[0].isIntersecting) setWidth(skill.level);
+                });
+                if (barRef.current) observer.observe(barRef.current);
+                return () => observer.disconnect();
+            }, [skill.level]);
+            return (
+                <div className="mb-6" ref={barRef}>
+                    <div className="flex justify-between mb-1">
+                        <span className="text-sm font-medium text-cyan-300">{skill.name}</span>
+                        <span className="text-sm font-medium text-slate-400">{skill.level}%</span>
+                    </div>
+                    <div className="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                        <div className="bg-gradient-to-r from-cyan-500 to-blue-600 h-2.5 rounded-full transition-all duration-1500 ease-out" style={{ width: `${width}%` }}></div>
+                    </div>
+                </div>
+            );
+        };
+
+        const CertificationCard = ({ cert }) => {
+            const [verified, setVerified] = useState(false);
+            const Icon = cert.icon;
+            return (
+                <div className="relative group p-[1px] rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 hover:from-cyan-500 hover:to-blue-600 transition-all duration-500 cursor-default">
+                    <div className="bg-slate-900 p-5 rounded-xl h-full flex flex-col relative z-10">
+                        <div className="flex justify-between items-start mb-3">
+                            <div className="p-2 bg-slate-800 rounded-lg group-hover:bg-slate-800/80 transition-colors">
+                                <Icon className="w-6 h-6 text-cyan-400" />
+                            </div>
+                            {verified ? (
+                                <div className="flex items-center gap-1 text-green-400 animate-pulse">
+                                    <CheckCircle2 className="w-4 h-4" />
+                                    <span className="text-[10px] font-bold uppercase tracking-wider">Verified</span>
+                                </div>
+                            ) : (
+                                <button onClick={() => setVerified(true)} className="text-[10px] font-bold uppercase tracking-wider text-slate-500 hover:text-cyan-400 border border-slate-700 px-2 py-1 rounded hover:border-cyan-400 transition-all">Verify</button>
+                            )}
+                        </div>
+                        <h4 className="text-lg font-bold text-white mb-1 group-hover:text-cyan-200 transition-colors">{cert.title}</h4>
+                        <div className="text-xs text-cyan-500 mb-3 font-mono">{cert.issuer}</div>
+                        <p className="text-slate-400 text-sm leading-snug">{cert.desc}</p>
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-20 pointer-events-none bg-gradient-to-tr from-transparent via-white to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                    </div>
+                </div>
+            );
+        };
+
+        const TimelineItem = ({ data, isLast }) => (
+            <div className="relative pl-8 pb-12 group">
+                {!isLast && <div className="absolute left-[11px] top-8 bottom-0 w-0.5 bg-slate-700 group-hover:bg-cyan-900/50 transition-colors"></div>}
+                <div className="absolute left-0 top-1 w-6 h-6 bg-slate-900 rounded-full border-2 border-cyan-500 flex items-center justify-center z-10 group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(6,182,212,0.3)]">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                </div>
+                <div className="bg-slate-800/40 p-5 rounded-lg border border-slate-700/50 hover:border-cyan-500/30 transition-all hover:translate-x-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+                        <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors">{data.role || data.degree}</h3>
+                        <span className="text-xs font-mono text-cyan-400 bg-cyan-950/30 px-2 py-1 rounded border border-cyan-900/50">{data.period}</span>
+                    </div>
+                    <div className="text-base text-slate-300 font-medium mb-2">{data.company || data.school}{data.grade && <span className="text-slate-500 text-sm ml-2">• {data.grade}</span>}</div>
+                    <p className="text-slate-400 text-sm leading-relaxed">{data.desc || data.detail}</p>
+                </div>
+            </div>
+        );
+
+        const ProjectCard = ({ project }) => {
+            const [insight, setInsight] = useState(null);
+            const [loading, setLoading] = useState(false);
+            const generateInsight = async () => {
+                setLoading(true);
+                const result = await callGemini(`Project: ${project.title}. Tech: ${project.tech}. Desc: ${project.desc}. Give a 1 sentence technical pro-tip about this.`);
+                setInsight(result);
+                setLoading(false);
+            };
+            return (
+                <div className="group relative bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 hover:border-cyan-500/50 transition-all duration-300 flex flex-col h-full hover:shadow-[0_0_30px_rgba(8,145,178,0.15)]">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                    <div className="p-6 flex-1 flex flex-col">
+                        <div className="flex justify-between items-start mb-4">
+                            <div className="p-2 bg-slate-800 rounded-lg group-hover:bg-cyan-900/20 transition-colors"><Layers className="w-6 h-6 text-cyan-400" /></div>
+                            <span className="text-xs font-semibold text-slate-500 border border-slate-700 px-2 py-1 rounded-full">{project.category}</span>
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">{project.title}</h3>
+                        <p className="text-slate-400 text-sm mb-4 flex-1">{project.desc}</p>
+                        <div className="mb-4">
+                            {insight ? (
+                                <div className="bg-cyan-950/30 border border-cyan-900/50 p-3 rounded-lg animate-fade-in"><div className="flex items-center gap-2 mb-1 text-cyan-300 text-xs font-bold uppercase tracking-wide"><Sparkles className="w-3 h-3" /> AI Analysis</div><p className="text-xs text-slate-300 leading-relaxed italic">"{insight}"</p></div>
+                            ) : (
+                                <button onClick={generateInsight} disabled={loading} className="w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-xs font-medium text-cyan-400 flex items-center justify-center gap-2 transition-all">{loading ? <span className="animate-pulse">Analyzing...</span> : <><Sparkles className="w-3 h-3" /> Technical Insight</>}</button>
+                            )}
+                        </div>
+                        <div className="flex flex-wrap gap-2 mt-auto">{project.tech.split(', ').map((tag, i) => (<span key={i} className="text-xs text-cyan-300 bg-cyan-950/40 px-2 py-1 rounded">{tag}</span>))}</div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ChatWidget = () => {
+            const [isOpen, setIsOpen] = useState(false);
+            const [messages, setMessages] = useState([{ role: 'assistant', text: "Hi! I'm Shahd's AI Assistant. Ask about her skills!" }]);
+            const [inputValue, setInputValue] = useState('');
+            const [isTyping, setIsTyping] = useState(false);
+            const messagesEndRef = useRef(null);
+
+            useEffect(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), [messages]);
+
+            const handleSend = async () => {
+                if (!inputValue.trim()) return;
+                const userMsg = inputValue;
+                setInputValue('');
+                setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+                setIsTyping(true);
+                const aiResponseText = await callGemini(userMsg, "You are Shahd Kordy's AI assistant. Answer briefly.");
+                setIsTyping(false);
+                setMessages(prev => [...prev, { role: 'assistant', text: aiResponseText }]);
+            };
+
+            return (
+                <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+                    {isOpen && (
+                        <div className="bg-slate-900 border border-slate-700 w-80 sm:w-96 h-96 rounded-2xl shadow-2xl mb-4 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
+                            <div className="bg-slate-800 p-4 border-b border-slate-700 flex justify-between items-center">
+                                <div className="flex items-center gap-2"><div className="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center"><Bot className="w-5 h-5 text-white" /></div><div><h4 className="text-sm font-bold text-white">Shahd's AI Agent</h4><div className="flex items-center gap-1"><span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span><span className="text-[10px] text-slate-400">Online</span></div></div></div>
+                                <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+                            </div>
+                            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-950/50">
+                                {messages.map((msg, idx) => (<div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}><div className={`max-w-[80%] p-3 rounded-2xl text-sm ${msg.role === 'user' ? 'bg-cyan-600 text-white rounded-br-none' : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-bl-none'}`}>{msg.text}</div></div>))}
+                                {isTyping && <div className="flex justify-start"><div className="bg-slate-800 p-3 rounded-2xl rounded-bl-none border border-slate-700 flex gap-1"><span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce"></span><span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce delay-100"></span><span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce delay-200"></span></div></div>}
+                                <div ref={messagesEndRef} />
+                            </div>
+                            <div className="p-3 bg-slate-800 border-t border-slate-700"><div className="relative"><input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder="Ask me anything..." className="w-full bg-slate-900 text-slate-200 text-sm rounded-full pl-4 pr-10 py-2.5 border border-slate-700 focus:outline-none focus:border-cyan-500" /><button onClick={handleSend} disabled={!inputValue.trim()} className="absolute right-1 top-1 p-1.5 bg-cyan-600 rounded-full text-white hover:bg-cyan-500 disabled:opacity-50"><Send className="w-4 h-4" /></button></div></div>
+                        </div>
+                    )}
+                    <button onClick={() => setIsOpen(!isOpen)} className="group flex items-center justify-center w-14 h-14 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.5)] hover:shadow-[0_0_30px_rgba(6,182,212,0.7)] transition-all hover:scale-105">
+                        {isOpen ? <X className="w-6 h-6 text-white" /> : <MessageSquare className="w-6 h-6 text-white" />}
+                        {!isOpen && <span className="absolute -top-1 -right-1 flex h-3 w-3"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span>}
+                    </button>
+                </div>
+            );
+        };
+
+        // --- Main App ---
+        function Portfolio() {
+            const [activeTab, setActiveTab] = useState('experience');
+
+            return (
+                <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden">
+                    <div className="fixed inset-0 z-0 pointer-events-none">
+                        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+                        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
+                        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+                    </div>
+
+                    <nav className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
+                        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+                            <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent flex items-center gap-2">
+                                <Terminal className="w-6 h-6 text-cyan-500" /> SHAHD M KORDY_
+                            </div>
+                            <a href={`mailto:${personalInfo.email}`} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-full text-sm font-medium transition-colors border border-slate-700 flex items-center gap-2">
+                                <Mail className="w-4 h-4" /> Contact Me
+                            </a>
+                        </div>
+                    </nav>
+
+                    <section className="relative pt-32 pb-20 px-6 max-w-6xl mx-auto z-10">
+                        <AnimatedSection className="flex flex-col md:flex-row items-center gap-12">
+                            <div className="flex-1 space-y-6">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/50 border border-cyan-900/50 text-cyan-400 text-sm font-mono"><span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>Open to Opportunities</div>
+                                <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-tight">Hello, I'm <br /><TypewriterEffect words={personalInfo.roles} /></h1>
+                                <p className="text-xl text-slate-400 max-w-lg leading-relaxed border-l-4 border-cyan-500 pl-6">{personalInfo.summary}</p>
+                                <div className="flex flex-wrap gap-4 pt-4">
+                                    <button onClick={() => document.getElementById('projects').scrollIntoView({behavior: 'smooth'})} className="px-8 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-semibold transition-all hover:shadow-[0_0_20px_rgba(8,145,178,0.4)] flex items-center gap-2">View Projects <ChevronDown className="w-4 h-4" /></button>
+                                    <button className="px-8 py-3 bg-transparent border border-slate-600 hover:border-slate-400 text-slate-300 rounded-lg font-semibold transition-all flex items-center gap-2 hover:bg-slate-800"><Linkedin className="w-4 h-4" /> LinkedIn</button>
+                                </div>
+                            </div>
+                            <div className="flex-1 w-full max-w-md relative">
+                                <div className="aspect-square rounded-full border border-slate-800 relative animate-spin-slow">
+                                    <div className="absolute inset-4 rounded-full border border-dashed border-slate-700"></div>
+                                    <div className="absolute inset-12 rounded-full border border-slate-800"></div>
+                                </div>
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+                                <div className="absolute top-10 right-0 bg-slate-800/90 backdrop-blur border border-slate-700 p-4 rounded-xl shadow-xl animate-bounce" style={{animationDuration: '3s'}}><div className="flex items-center gap-3"><div className="p-2 bg-green-500/20 rounded-lg"><Database className="w-5 h-5 text-green-400" /></div><div><div className="text-xs text-slate-400">Data Accuracy</div><div className="font-bold text-white">100%</div></div></div></div>
+                                <div className="absolute bottom-20 left-0 bg-slate-800/90 backdrop-blur border border-slate-700 p-4 rounded-xl shadow-xl animate-bounce" style={{animationDuration: '4s'}}><div className="flex items-center gap-3"><div className="p-2 bg-purple-500/20 rounded-lg"><PieChart className="w-5 h-5 text-purple-400" /></div><div><div className="text-xs text-slate-400">Dashboards</div><div className="font-bold text-white">Interactive</div></div></div></div>
+                            </div>
+                        </AnimatedSection>
+                    </section>
+
+                    <section className="py-20 bg-slate-900/50 border-y border-white/5 relative z-10 overflow-hidden">
+                        <div className="max-w-6xl mx-auto px-6">
+                            <AnimatedSection>
+                                <div className="text-center mb-16"><h2 className="text-3xl font-bold text-white mb-4">My Data Methodology</h2><div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 mx-auto rounded-full"></div></div>
+                                <div className="relative grid grid-cols-1 md:grid-cols-3 gap-12">
+                                    <div className="hidden md:block absolute top-8 left-[16%] right-[16%] h-0.5 bg-slate-700 z-0 border-t border-dashed border-slate-600"></div>
+                                    <div className="flex flex-col items-center text-center relative z-10"><div className="w-16 h-16 bg-slate-800 rounded-2xl border border-slate-700 flex items-center justify-center mb-4 shadow-lg group hover:border-cyan-500 transition-all transform hover:-translate-y-2"><Database className="w-8 h-8 text-slate-400 group-hover:text-cyan-400" /></div><h4 className="text-lg font-bold text-white mb-1">Ingest & Clean</h4><p className="text-xs text-slate-400">ETL, SQL, Power Query</p></div>
+                                    <div className="flex flex-col items-center text-center relative z-10"><div className="w-16 h-16 bg-slate-800 rounded-2xl border border-slate-700 flex items-center justify-center mb-4 shadow-lg group hover:border-cyan-500 transition-all transform hover:-translate-y-2"><BrainCircuit className="w-8 h-8 text-slate-400 group-hover:text-cyan-400" /></div><h4 className="text-lg font-bold text-white mb-1">Analyze & Model</h4><p className="text-xs text-slate-400">Python, Pandas, Statistics</p></div>
+                                    <div className="flex flex-col items-center text-center relative z-10"><div className="w-16 h-16 bg-slate-800 rounded-2xl border border-slate-700 flex items-center justify-center mb-4 shadow-lg group hover:border-cyan-500 transition-all transform hover:-translate-y-2"><BarChart3 className="w-8 h-8 text-slate-400 group-hover:text-cyan-400" /></div><h4 className="text-lg font-bold text-white mb-1">Visualize & Act</h4><p className="text-xs text-slate-400">Power BI, Tableau</p></div>
+                                </div>
+                            </AnimatedSection>
+                        </div>
+                    </section>
+
+                    <section className="py-20 max-w-6xl mx-auto px-6 z-10 relative">
+                        <div className="grid md:grid-cols-12 gap-12">
+                            <div className="md:col-span-4 space-y-12">
+                                <AnimatedSection>
+                                    <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2"><Terminal className="w-5 h-5 text-cyan-400" /> Technical Arsenal</h3>
+                                    <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-inner">{skills.map((skill, idx) => (<SkillBar key={idx} skill={skill} />))}</div>
+                                </AnimatedSection>
+                                <AnimatedSection>
+                                    <h3 className="text-xl font-bold text-white mb-6">Languages</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="p-4 bg-slate-800 rounded-lg text-center border border-slate-700"><div className="text-2xl font-bold text-white mb-1">Native</div><div className="text-xs text-slate-400 uppercase tracking-wider">Arabic</div></div>
+                                        <div className="p-4 bg-slate-800 rounded-lg text-center border border-slate-700"><div className="text-2xl font-bold text-white mb-1">Fluent</div><div className="text-xs text-slate-400 uppercase tracking-wider">English</div></div>
+                                    </div>
+                                </AnimatedSection>
+                            </div>
+
+                            <div className="md:col-span-8 space-y-16">
+                                <AnimatedSection>
+                                    <div className="flex flex-wrap gap-4 mb-8 border-b border-slate-800 pb-2">
+                                        <button onClick={() => setActiveTab('experience')} className={`pb-2 text-lg font-medium transition-colors flex items-center gap-2 ${activeTab === 'experience' ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}><Briefcase className="w-4 h-4" /> Experience</button>
+                                        <button onClick={() => setActiveTab('education')} className={`pb-2 text-lg font-medium transition-colors flex items-center gap-2 ${activeTab === 'education' ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}><GraduationCap className="w-4 h-4" /> Education</button>
+                                        <button onClick={() => setActiveTab('certifications')} className={`pb-2 text-lg font-medium transition-colors flex items-center gap-2 ${activeTab === 'certifications' ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}><FileBadge className="w-4 h-4" /> Certifications</button>
+                                    </div>
+                                    <div className="space-y-4 min-h-[400px]">
+                                        {activeTab === 'experience' && experience.map((job, idx) => (<TimelineItem key={idx} data={job} isLast={idx === experience.length - 1} />))}
+                                        {activeTab === 'education' && education.map((edu, idx) => (<TimelineItem key={idx} data={edu} isLast={idx === education.length - 1} />))}
+                                        {activeTab === 'certifications' && <div className="grid sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">{certifications.map((cert, idx) => (<CertificationCard key={idx} cert={cert} />))}</div>}
+                                    </div>
+                                </AnimatedSection>
+
+                                <AnimatedSection>
+                                    <div id="projects" className="flex items-center justify-between mb-8"><h3 className="text-2xl font-bold text-white flex items-center gap-2"><Layers className="w-6 h-6 text-cyan-400" /> Featured Projects</h3><span className="text-sm text-slate-500 font-mono border border-slate-700 px-2 py-1 rounded">Case Studies</span></div>
+                                    <div className="grid sm:grid-cols-2 gap-6">{projects.map((proj, idx) => (<ProjectCard key={idx} project={proj} />))}</div>
+                                </AnimatedSection>
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer className="bg-slate-900 border-t border-slate-800 pt-16 pb-8 relative z-10">
+                        <div className="max-w-4xl mx-auto px-6 text-center">
+                            <h2 className="text-3xl font-bold text-white mb-8">Let's Turn Your Data Into Decisions</h2>
+                            <div className="flex flex-col sm:flex-row justify-center gap-6 mb-12">
+                                <a href={`mailto:${personalInfo.email}`} className="flex items-center justify-center gap-3 px-6 py-4 bg-slate-800 rounded-xl hover:bg-slate-700 transition-colors border border-slate-700 group"><Mail className="w-5 h-5 text-cyan-400 group-hover:scale-110" /><div className="text-left"><div className="text-xs text-slate-400">Email Me</div><div className="text-sm font-medium text-white">{personalInfo.email}</div></div></a>
+                                <a href={`tel:${personalInfo.phone}`} className="flex items-center justify-center gap-3 px-6 py-4 bg-slate-800 rounded-xl hover:bg-slate-700 transition-colors border border-slate-700 group"><Phone className="w-5 h-5 text-cyan-400 group-hover:scale-110" /><div className="text-left"><div className="text-xs text-slate-400">Call Me</div><div className="text-sm font-medium text-white">{personalInfo.phone}</div></div></a>
+                            </div>
+                            <div className="text-slate-500 text-sm border-t border-slate-800 pt-8">© {new Date().getFullYear()} Shahd Kordy. Built with React & Tailwind CSS.</div>
+                        </div>
+                    </footer>
+                    <ChatWidget />
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Portfolio />);
+    </script>
+</body>
+</html>
