@@ -5,20 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shahd Kordy | Data Analytics Engineer</title>
     
-    <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Babel for JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Lucide Icons (Vanilla JS version) -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
@@ -113,7 +108,7 @@
             "BarChart3", "Database", "Code2", "BrainCircuit", "Presentation", "Briefcase", 
             "GraduationCap", "Mail", "Phone", "Linkedin", "MapPin", "Award", "Terminal", 
             "ChevronDown", "ExternalLink", "Layers", "PieChart", "MessageSquare", 
-            "Sparkles", "X", "Send", "Bot", "CheckCircle2", "FileBadge", "Menu"
+            "Sparkles", "X", "Send", "Bot", "CheckCircle2", "FileBadge", "Menu", "Download", "Eye"
         ];
 
         // Generate the Icon Components map
@@ -127,21 +122,19 @@
             BarChart3, Database, Code2, BrainCircuit, Presentation, Briefcase, 
             GraduationCap, Mail, Phone, Linkedin, MapPin, Award, Terminal, 
             ChevronDown, ExternalLink, Layers, PieChart, MessageSquare, 
-            Sparkles, X, Send, Bot, CheckCircle2, FileBadge, Menu 
+            Sparkles, X, Send, Bot, CheckCircle2, FileBadge, Menu, Download, Eye
         } = Icons;
 
-        // --- Gemini Configuration ---
-        const apiKey = ""; // Environment will inject key if available, else empty.
+        // --- Gemini Configuration (Placeholder) ---
+        const apiKey = ""; 
 
         const callGemini = async (prompt, systemInstruction = "") => {
             try {
-                // If no API key is set (client-side demo), return a mock response to prevent errors
                 if (!apiKey) {
                     return new Promise(resolve => setTimeout(() => {
                         resolve("I am in demo mode inside the HTML file. In a real deployment with an API Key, I would analyze this data using Gemini AI to provide specific insights about Shahd's work!");
                     }, 1500));
                 }
-
                 const response = await fetch(
                 `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
                 {
@@ -163,40 +156,58 @@
             }
         };
 
-        // --- Data ---
+        // --- Data (Updated from CV) ---
         const personalInfo = {
             name: "Shahd Kordy",
-            roles: ["Data Analytics Engineer", "Instructor", "Python Developer", "Data Storyteller","SHAHD M KORDY"],
-            location: "Egypt",
+            roles: ["Data Analytics Engineer", "Instructor", "Python Developer", "Data Storyteller"],
+            location: "Egypt (Hybrid)",
             email: "shahdmkordy6@gmail.com",
             phone: "+201117291557",
-            summary: "Transforming raw data into strategic business insights using Python, SQL, and Power BI. Experienced in the full data lifecycle—from ETL and cleaning to advanced modeling and dashboard creation."
+            summary: "Data Analytics Engineer specializing in end-to-end data solutions. I leverage Python, SQL, and Power BI to automate workflows, ensure data quality, and visualize complex metrics. Passionate about bridging the gap between technical data processes and actionable business strategies.",
+            cvFile: "Shahd_Kordy_CV.pdf" // Ensure this file exists in your folder
         };
 
         const skills = [
-            { name: "Python (Pandas, NumPy)", level: 90 },
-            { name: "SQL (T-SQL) & Databases", level: 85 },
+            { name: "Python (Pandas, NumPy, Scikit-learn)", level: 90 },
+            { name: "SQL (T-SQL, SSMS) & Databases", level: 85 },
             { name: "Power BI & DAX", level: 95 },
             { name: "Tableau", level: 80 },
-            { name: "Excel (Power Query)", level: 95 },
-            { name: "Machine Learning (Scikit-learn)", level: 75 },
+            { name: "Advanced Excel (Power Query)", level: 95 },
+            { name: "Data Engineering (ETL, Warehousing)", level: 80 },
+            { name: "Tools (Git, GitHub, VS Code)", level: 85 },
         ];
 
         const experience = [
             {
+                role: "Applied AI (DEBI Scholarship)",
+                company: "Digital Egypt Builders Initiative",
+                period: "2025 - Present",
+                type: "Hybrid",
+                desc: "Leveraging Generative AI and modern AI tools to enhance data analytics. Focusing on using LLMs to automate workflows and extract insights from complex data.",
+                icon: BrainCircuit
+            },
+            {
                 role: "Data Analyst",
-                company: "Hwyt Bytk (Saudi Company)",
+                company: "Hawiet Baitak (Saudi Company)",
                 period: "10/2025 - Present",
                 type: "Remote",
-                desc: "Designed rigorous data cleaning workflows (100% accuracy). Developed dynamic dashboards for Sales KPIs. Automating commission logic.",
+                desc: "Designed automated cleaning workflows ensuring 100% accuracy. Built dynamic dashboards for Sales KPIs. Automated complex commission calculations reducing manual time.",
                 icon: Database
+            },
+             {
+                role: "Data Analyst Trainee (DEPI)",
+                company: "Digital Egypt Pioneers Initiative",
+                period: "06/2025 - 12/2025",
+                type: "Hybrid",
+                desc: "Completed an intensive 6-month track covering the full data lifecycle (ETL to Visualization). Mastered SQL and Python for statistical analysis.",
+                icon: BarChart3
             },
             {
                 role: "Coding & Robotics Instructor",
                 company: "Scientific Center",
                 period: "07/2025 - Present",
                 type: "On Site",
-                desc: "Developed custom tracking tools for student performance. Generated weekly analytical reports to inform curriculum adjustments.",
+                desc: "Developed custom tracking tools to analyze student performance data. Generated data-driven weekly reports to optimize curriculum delivery.",
                 icon: Code2
             },
             {
@@ -204,8 +215,8 @@
                 company: "Hi DeepAI",
                 period: "02/2025 - 10/2025",
                 type: "On Site",
-                desc: "Delivered 50+ hours of Python training. Tailored educational materials based on initial skill assessments.",
-                icon: BrainCircuit
+                desc: "Delivered 250+ hours of Python training focused on data-driven problem-solving. Analyzed skill assessment data to tailor educational materials.",
+                icon: Presentation
             }
         ];
 
@@ -215,34 +226,40 @@
                 school: "Nahda University (NUB)",
                 grade: "Very Good",
                 period: "2021 - 2025",
-                detail: "Graduation Project: Tracelet (1st Place, Excellent) - Child safety system with AI & Geofencing."
+                detail: "Graduation Project: Tracelet (1st Place, Excellent) - Award-winning child safety system with AI & Geofencing."
             }
         ];
 
         const certifications = [
             {
-                title: "Data Analysis Track",
-                issuer: "DEPI",
-                desc: "Intensive 6-month scholarship covering full data lifecycle, ETL, SQL, Python, and Power BI.",
-                icon: Award
-            },
-            {
-                title: "Data Analyst (Python)",
-                issuer: "DataCamp",
-                desc: "Comprehensive track on Python data science foundation, Pandas, NumPy, and Seaborn.",
-                icon: Terminal
-            },
-            {
-                title: "Tableau Visualization",
-                issuer: "DataCamp",
-                desc: "Specialized training on connecting data sources and interactive dashboard design.",
+                title: "Microsoft Power BI Data Analyst",
+                issuer: "Microsoft",
+                desc: "Professional Certificate covering Data Prep, ETL automation with Power Query, and advanced Data Modeling with DAX.",
                 icon: BarChart3
             },
             {
-                title: "Instructional Design",
+                title: "Data Analysis & Visualization Track",
+                issuer: "DEPI",
+                desc: "Intensive 6-month scholarship covering full data lifecycle: ETL (SQL, Power Query), Statistical Analysis (Python), and Dashboarding.",
+                icon: Award
+            },
+            {
+                title: "Data Analyst with Python",
+                issuer: "DataCamp",
+                desc: "60-hour comprehensive track on Data Science foundations, EDA, and visualization using Pandas, NumPy, and Seaborn.",
+                icon: Terminal
+            },
+            {
+                title: "Instructional Design & E-Learning",
                 issuer: "Mahara Tech-ITI",
-                desc: "Specialized courses in Gamification, ADDIE Model, and AI ethics in education.",
+                desc: "Mastered curriculum design and LMS management (Moodle, Articulate Storyline 3).",
                 icon: Presentation
+            },
+             {
+                title: "Data Analytics Foundations",
+                issuer: "LinkedIn Learning / Microsoft",
+                desc: "Core data concepts and essential Microsoft tools for professional analysis.",
+                icon: FileBadge
             }
         ];
 
@@ -250,19 +267,19 @@
             {
                 title: "ProHost Hotel Analytics",
                 tech: "Power BI, DAX, SQL",
-                desc: "Engineered a full-cycle hotel analytics solution inspired by Opera PMS. Created 3 interactive dashboards (Finance, Reservations, NPS).",
+                desc: "Developed a full-cycle analytics solution with 3 interactive dashboards (Financial, Reservations, NPS), utilizing advanced DAX to visualize KPIs.",
                 category: "Business Intelligence"
             },
             {
                 title: "Financial Fraud Detection",
-                tech: "Python, Sklearn, AutoEncoder",
-                desc: "Built an anomaly detection model using Isolation Forest. Enhanced financial security by accurately flagging irregular transaction patterns.",
+                tech: "Python, Scikit-learn",
+                desc: "Built an anomaly detection model using Isolation Forest and AutoEncoder to identify fraudulent transactions and enhance financial security.",
                 category: "Data Science"
             },
             {
                 title: "Customer Segmentation",
                 tech: "Python, K-Means",
-                desc: "Applied clustering algorithms to segment customers based on purchasing behavior to support targeted marketing campaigns.",
+                desc: "Applied K-Means Clustering to segment customers by behavior, deriving actionable insights for targeted marketing strategies.",
                 category: "Machine Learning"
             },
             {
@@ -488,9 +505,11 @@
                             <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent flex items-center gap-2">
                                 <Terminal className="w-6 h-6 text-cyan-500" /> SHAHD M KORDY_
                             </div>
-                            <a href={`mailto:${personalInfo.email}`} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-full text-sm font-medium transition-colors border border-slate-700 flex items-center gap-2">
-                                <Mail className="w-4 h-4" /> Contact Me
-                            </a>
+                            <div className="flex gap-3">
+                                <a href={`mailto:${personalInfo.email}`} className="hidden sm:flex px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-full text-sm font-medium transition-colors border border-slate-700 items-center gap-2">
+                                    <Mail className="w-4 h-4" /> Contact Me
+                                </a>
+                            </div>
                         </div>
                     </nav>
 
@@ -500,9 +519,19 @@
                                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/50 border border-cyan-900/50 text-cyan-400 text-sm font-mono"><span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>Open to Opportunities</div>
                                 <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-tight">Hello, I'm <br /><TypewriterEffect words={personalInfo.roles} /></h1>
                                 <p className="text-xl text-slate-400 max-w-lg leading-relaxed border-l-4 border-cyan-500 pl-6">{personalInfo.summary}</p>
+                                
                                 <div className="flex flex-wrap gap-4 pt-4">
                                     <button onClick={() => document.getElementById('projects').scrollIntoView({behavior: 'smooth'})} className="px-8 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-semibold transition-all hover:shadow-[0_0_20px_rgba(8,145,178,0.4)] flex items-center gap-2">View Projects <ChevronDown className="w-4 h-4" /></button>
-                                    <button className="px-8 py-3 bg-transparent border border-slate-600 hover:border-slate-400 text-slate-300 rounded-lg font-semibold transition-all flex items-center gap-2 hover:bg-slate-800"><Linkedin className="w-4 h-4" /> LinkedIn</button>
+                                    
+                                    {/* CV ACTIONS AREA */}
+                                    <div className="flex gap-2">
+                                        <a href={personalInfo.cvFile} target="_blank" className="px-6 py-3 bg-transparent border border-slate-600 hover:border-cyan-400 hover:text-cyan-400 text-slate-300 rounded-lg font-semibold transition-all flex items-center gap-2 hover:bg-slate-800">
+                                            <Eye className="w-4 h-4" /> Preview CV
+                                        </a>
+                                        <a href={personalInfo.cvFile} download className="px-6 py-3 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2">
+                                            <Download className="w-4 h-4" /> Download
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex-1 w-full max-w-md relative">
