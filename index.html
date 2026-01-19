@@ -104,7 +104,7 @@
             "GraduationCap", "Mail", "Phone", "Linkedin", "MapPin", "Award", "Terminal", 
             "ChevronDown", "ChevronRight", "ChevronLeft", "ExternalLink", "Layers", "PieChart", "MessageSquare", 
             "Sparkles", "X", "Send", "Bot", "CheckCircle2", "FileBadge", "Menu", "Download", "Eye",
-            "Medal", "Folder", "FileText", "ArrowLeft"
+            "Medal", "Folder", "FileText", "ArrowLeft", "LineChart", "Lightbulb"
         ];
 
         // Generate the Icon Components map
@@ -119,7 +119,7 @@
             GraduationCap, Mail, Phone, Linkedin, MapPin, Award, Terminal, 
             ChevronDown, ChevronRight, ChevronLeft, ExternalLink, Layers, PieChart, MessageSquare, 
             Sparkles, X, Send, Bot, CheckCircle2, FileBadge, Menu, Download, Eye,
-            Medal, Folder, FileText, ArrowLeft
+            Medal, Folder, FileText, ArrowLeft, LineChart, Lightbulb
         } = Icons;
 
         // --- Gemini Configuration (Placeholder) ---
@@ -156,7 +156,8 @@
         // --- Data (Updated from CV) ---
         const personalInfo = {
             name: "Shahd Kordy",
-            roles: ["Data Analytics Engineer", "Instructor", "Python Developer", "Data Storyteller"],
+            // UPDATED: Added Microsoft Power BI Certified
+            roles: ["Data Analytics Engineer", "Microsoft Power BI Certified", "Instructor", "Python Developer", "Data Storyteller"],
             location: "Egypt (Hybrid)",
             email: "shahdmkordy6@gmail.com",
             phone: "+201117291557",
@@ -164,7 +165,7 @@
             cvFile: "Shahd_Kordy_CV.pdf" 
         };
 
-        // --- CERTIFICATES DATA STRUCTURE (COMPLETE - NO FILES MISSING) ---
+        // --- CERTIFICATES DATA STRUCTURE (UNCHANGED) ---
         const certificatesStructure = [
             {
                 name: "business skills",
@@ -310,6 +311,15 @@
                 type: "Hybrid",
                 desc: "Leveraging Generative AI and modern AI tools to enhance data analytics. Focusing on using LLMs to automate workflows and extract insights from complex data.",
                 icon: BrainCircuit
+            },
+            // UPDATED: Added Mashroo3k Internship
+            {
+                role: "Internship Trainee (Business Analysis)",
+                company: "Mashroo3k | مشروعك",
+                period: "12/2025 - 01/2026",
+                type: "On Site",
+                desc: "Focused on Business Development, Business Data Management, and monitoring key business metrics.",
+                icon: Briefcase
             },
             {
                 role: "Data Analyst",
@@ -807,8 +817,41 @@
                                     <div className="absolute inset-12 rounded-full border border-slate-800"></div>
                                 </div>
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-full blur-3xl opacity-20 animate-pulse"></div>
-                                <div className="absolute top-10 right-0 bg-slate-800/90 backdrop-blur border border-slate-700 p-4 rounded-xl shadow-xl animate-bounce" style={{animationDuration: '3s'}}><div className="flex items-center gap-3"><div className="p-2 bg-green-500/20 rounded-lg"><Database className="w-5 h-5 text-green-400" /></div><div><div className="text-xs text-slate-400">Data Accuracy</div><div className="font-bold text-white">100%</div></div></div></div>
-                                <div className="absolute bottom-20 left-0 bg-slate-800/90 backdrop-blur border border-slate-700 p-4 rounded-xl shadow-xl animate-bounce" style={{animationDuration: '4s'}}><div className="flex items-center gap-3"><div className="p-2 bg-purple-500/20 rounded-lg"><PieChart className="w-5 h-5 text-purple-400" /></div><div><div className="text-xs text-slate-400">Dashboards</div><div className="font-bold text-white">Interactive</div></div></div></div>
+                                
+                                {/* --- UPDATED HERO FLOATING CARDS (4 Cards now) --- */}
+                                
+                                {/* 1. Data Accuracy (Top Right) - EXISTING */}
+                                <div className="absolute top-4 right-0 bg-slate-800/90 backdrop-blur border border-slate-700 p-4 rounded-xl shadow-xl animate-bounce" style={{animationDuration: '3s'}}>
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-green-500/20 rounded-lg"><Database className="w-5 h-5 text-green-400" /></div>
+                                        <div><div className="text-xs text-slate-400">Data Accuracy</div><div className="font-bold text-white">100%</div></div>
+                                    </div>
+                                </div>
+
+                                {/* 2. Dashboards (Bottom Left) - EXISTING */}
+                                <div className="absolute bottom-16 left-0 bg-slate-800/90 backdrop-blur border border-slate-700 p-4 rounded-xl shadow-xl animate-bounce" style={{animationDuration: '4s'}}>
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-purple-500/20 rounded-lg"><PieChart className="w-5 h-5 text-purple-400" /></div>
+                                        <div><div className="text-xs text-slate-400">Dashboards</div><div className="font-bold text-white">Interactive</div></div>
+                                    </div>
+                                </div>
+
+                                {/* 3. Power BI Certified (Top Left) - NEW */}
+                                <div className="absolute top-16 left-[-20px] bg-slate-800/90 backdrop-blur border border-slate-700 p-4 rounded-xl shadow-xl animate-bounce" style={{animationDuration: '5s'}}>
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-amber-500/20 rounded-lg"><Award className="w-5 h-5 text-amber-400" /></div>
+                                        <div><div className="text-xs text-slate-400">Microsoft</div><div className="font-bold text-white">Certified</div></div>
+                                    </div>
+                                </div>
+
+                                {/* 4. Business Analysis (Bottom Right) - NEW */}
+                                <div className="absolute bottom-8 right-[-10px] bg-slate-800/90 backdrop-blur border border-slate-700 p-4 rounded-xl shadow-xl animate-bounce" style={{animationDuration: '6s'}}>
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-blue-500/20 rounded-lg"><LineChart className="w-5 h-5 text-blue-400" /></div>
+                                        <div><div className="text-xs text-slate-400">Business</div><div className="font-bold text-white">Analysis</div></div>
+                                    </div>
+                                </div>
+
                             </div>
                         </AnimatedSection>
                     </section>
