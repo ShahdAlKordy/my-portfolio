@@ -35,10 +35,6 @@
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-        @keyframes shine {
-            from { transform: translateX(-100%); }
-            to { transform: translateX(100%); }
-        }
         @keyframes glow { 
             0%, 100% { box-shadow: 0 0 10px #f59e0b, 0 0 20px #f59e0b; } 
             50% { box-shadow: 0 0 20px #fbbf24, 0 0 30px #fbbf24; } 
@@ -101,9 +97,9 @@
         const iconNames = [
             "BarChart3", "Database", "Code2", "BrainCircuit", "Presentation", "Briefcase", 
             "GraduationCap", "Mail", "Phone", "Linkedin", "MapPin", "Award", "Terminal", 
-            "ChevronDown", "ExternalLink", "Layers", "PieChart", "MessageSquare", 
+            "ChevronDown", "ChevronRight", "ExternalLink", "Layers", "PieChart", "MessageSquare", 
             "Sparkles", "X", "Send", "Bot", "CheckCircle2", "FileBadge", "Menu", "Download", "Eye",
-            "Medal", "FolderOpen", "BookOpen" // Added for Gallery
+            "Medal", "FolderOpen", "Folder", "FileText", "BookOpen"
         ];
 
         // Generate the Icon Components map
@@ -116,9 +112,9 @@
         const { 
             BarChart3, Database, Code2, BrainCircuit, Presentation, Briefcase, 
             GraduationCap, Mail, Phone, Linkedin, MapPin, Award, Terminal, 
-            ChevronDown, ExternalLink, Layers, PieChart, MessageSquare, 
+            ChevronDown, ChevronRight, ExternalLink, Layers, PieChart, MessageSquare, 
             Sparkles, X, Send, Bot, CheckCircle2, FileBadge, Menu, Download, Eye,
-            Medal, FolderOpen, BookOpen
+            Medal, FolderOpen, Folder, FileText, BookOpen
         } = Icons;
 
         // --- Gemini Configuration (Placeholder) ---
@@ -163,42 +159,108 @@
             cvFile: "Shahd_Kordy_CV.pdf" 
         };
 
-        // --- CERTIFICATES DATA (EXACT PATHS from your structure) ---
-        const certificatesData = {
-            "Data Analysis & BI": [
-                { title: "DEPI Scholarship (Track)", file: "Certificates/data analysis/Digital Egypt Pioneers Initiative (DEPI)/debi.pdf" },
-                { title: "Power BI: Harnessing Power of Data", file: "Certificates/data analysis/Microsoft Power BI Data Analyst Professional Certificate/2.Harnessing the Power of Data with Power BI.pdf" },
-                { title: "Power BI: ETL Data", file: "Certificates/data analysis/Microsoft Power BI Data Analyst Professional Certificate/3.Extract, Transform and Load Data in Power BI.pdf" },
-                { title: "Power BI: Data Modeling", file: "Certificates/data analysis/Microsoft Power BI Data Analyst Professional Certificate/4.Data Modeling in Power BI.pdf" },
-                { title: "Excel Data Analysis", file: "Certificates/data analysis/Excel/Mastering Data Analysis in Excel.pdf" },
-                { title: "Career Essentials (Microsoft)", file: "Certificates/data analysis/Career Essentials in Data Analysis by Microsoft and LinkedIn/CertificateOfCompletion_Career Essentials in Data Analysis by Microsoft and LinkedIn.pdf" },
-                { title: "SQL Server Objects", file: "Certificates/data analysis/SQL/Implementing and Developing SQL server objects en.pdf" },
-                { title: "Transact SQL Queries", file: "Certificates/data analysis/SQL/Transact SQL queries using SQL server en.pdf" }
-            ],
-            "Instructional Design": [
-                { title: "Instructional Design", file: "Certificates/e_education/Instructional Design en.pdf" },
-                { title: "eLearning Fundamentals", file: "Certificates/e_education/eLearning Fundamentals en.pdf" },
-                { title: "Articulate Storyline 3", file: "Certificates/e_education/Articulate Storyline 3 en.pdf" },
-                { title: "Gamification in eLearning", file: "Certificates/e_education/Gamification In eLearning en.pdf" },
-                { title: "Assessment Design Mastery", file: "Certificates/e_education/Assessment Design Mastery From Theory to Practice en.pdf" },
-                { title: "Moodle Admin Basics", file: "Certificates/e_education/Moodle Admin Basics en.pdf" }
-            ],
-            "Digital Marketing": [
-                { title: "Start Your Career in DM", file: "Certificates/digital markiting/Start Your Career in Digital Marketing en.pdf" },
-                { title: "AI for Digital Marketing", file: "Certificates/digital markiting/AI for Digital Marketing Applications in Online Business en.pdf" }
-            ],
-            "Business & Freelancing": [
-                { title: "Business Model Canvas", file: "Certificates/business skills/Business Model Canvas.pdf" },
-                { title: "Storytelling Presentation", file: "Certificates/business skills/Presentation Skills with Story Telling.pdf" },
-                { title: "Freelancing Basics", file: "Certificates/freelancing/Freelancing Basics en.pdf" },
-                { title: "Upwork Essentials", file: "Certificates/freelancing/Getting started as a freelancer (Upwork) en.pdf" }
-            ],
-            "Technical & Awards": [
-                { title: "Git & GitHub Skills", file: "Certificates/Technical skills/Master Git & GitHub Essential Skills for Developers[Arabic].pdf" },
-                { title: "Instructor Award (SCCD)", file: "Certificates/Instructor Awards/sccd.pdf" },
-                { title: "Recognition Certificate 1", file: "Certificates/Instructor Awards/sh 1 (1).pdf" }
-            ]
-        };
+        // --- CERTIFICATES DATA (NESTED STRUCTURE) ---
+        // This mirrors your folder structure EXACTLY.
+        const certificatesStructure = [
+            {
+                name: "business skills",
+                type: "folder",
+                children: [
+                    { name: "Business Model Canvas.pdf", type: "file", path: "Certificates/business skills/Business Model Canvas.pdf" },
+                    { name: "Presentation Skills with Story Telling.pdf", type: "file", path: "Certificates/business skills/Presentation Skills with Story Telling.pdf" }
+                ]
+            },
+            {
+                name: "data analysis",
+                type: "folder",
+                children: [
+                    {
+                        name: "Career Essentials in Data Analysis",
+                        type: "folder",
+                        children: [
+                            { name: "CertificateOfCompletion_Career Essentials.pdf", type: "file", path: "Certificates/data analysis/Career Essentials in Data Analysis by Microsoft and LinkedIn/CertificateOfCompletion_Career Essentials in Data Analysis by Microsoft and LinkedIn.pdf" },
+                            { name: "Learning Data Analytics 1 Foundations.pdf", type: "file", path: "Certificates/data analysis/Career Essentials in Data Analysis by Microsoft and LinkedIn/Learning Data Analytics 1 Foundations.pdf" },
+                             { name: "Learning Data Analytics 2 Extending.pdf", type: "file", path: "Certificates/data analysis/Career Essentials in Data Analysis by Microsoft and LinkedIn/CertificateOfCompletion_Learning Data Analytics Part 2 Extending and Applying Core Knowledge.pdf" }
+                        ]
+                    },
+                    {
+                        name: "Digital Egypt Pioneers Initiative (DEPI)",
+                        type: "folder",
+                        children: [
+                            { name: "debi.pdf", type: "file", path: "Certificates/data analysis/Digital Egypt Pioneers Initiative (DEPI)/debi.pdf" }
+                        ]
+                    },
+                    {
+                        name: "Excel",
+                        type: "folder",
+                        children: [
+                            { name: "Mastering Data Analysis in Excel.pdf", type: "file", path: "Certificates/data analysis/Excel/Mastering Data Analysis in Excel.pdf" }
+                        ]
+                    },
+                    {
+                        name: "Microsoft Power BI Data Analyst",
+                        type: "folder",
+                        children: [
+                            { name: "1.Preparing Data for Analysis with Microsoft Excel.pdf", type: "file", path: "Certificates/data analysis/Microsoft Power BI Data Analyst Professional Certificate/1.Preparing Data for Analysis with Microsoft Excel.pdf" },
+                            { name: "2.Harnessing the Power of Data with Power BI.pdf", type: "file", path: "Certificates/data analysis/Microsoft Power BI Data Analyst Professional Certificate/2.Harnessing the Power of Data with Power BI.pdf" },
+                            { name: "3.Extract, Transform and Load Data in Power BI.pdf", type: "file", path: "Certificates/data analysis/Microsoft Power BI Data Analyst Professional Certificate/3.Extract, Transform and Load Data in Power BI.pdf" },
+                            { name: "4.Data Modeling in Power BI.pdf", type: "file", path: "Certificates/data analysis/Microsoft Power BI Data Analyst Professional Certificate/4.Data Modeling in Power BI.pdf" }
+                        ]
+                    },
+                    {
+                        name: "SQL",
+                        type: "folder",
+                        children: [
+                            { name: "Implementing and Developing SQL server objects en.pdf", type: "file", path: "Certificates/data analysis/SQL/Implementing and Developing SQL server objects en.pdf" },
+                            { name: "Transact SQL queries using SQL server en.pdf", type: "file", path: "Certificates/data analysis/SQL/Transact SQL queries using SQL server en.pdf" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "digital markiting",
+                type: "folder",
+                children: [
+                    { name: "AI for Digital Marketing en.pdf", type: "file", path: "Certificates/digital markiting/AI for Digital Marketing Applications in Online Business en.pdf" },
+                    { name: "Start Your Career in Digital Marketing en.pdf", type: "file", path: "Certificates/digital markiting/Start Your Career in Digital Marketing en.pdf" }
+                ]
+            },
+            {
+                name: "e_education",
+                type: "folder",
+                children: [
+                    { name: "Articulate Storyline 3 en.pdf", type: "file", path: "Certificates/e_education/Articulate Storyline 3 en.pdf" },
+                    { name: "Assessment Design Mastery en.pdf", type: "file", path: "Certificates/e_education/Assessment Design Mastery From Theory to Practice en.pdf" },
+                    { name: "eLearning Fundamentals en.pdf", type: "file", path: "Certificates/e_education/eLearning Fundamentals en.pdf" },
+                    { name: "Gamification In eLearning en.pdf", type: "file", path: "Certificates/e_education/Gamification In eLearning en.pdf" },
+                    { name: "Instructional Design en.pdf", type: "file", path: "Certificates/e_education/Instructional Design en.pdf" },
+                    { name: "Moodle Admin Basics en.pdf", type: "file", path: "Certificates/e_education/Moodle Admin Basics en.pdf" }
+                ]
+            },
+            {
+                name: "freelancing",
+                type: "folder",
+                children: [
+                    { name: "Freelancing Basics en.pdf", type: "file", path: "Certificates/freelancing/Freelancing Basics en.pdf" },
+                    { name: "Getting started as a freelancer (Upwork) en.pdf", type: "file", path: "Certificates/freelancing/Getting started as a freelancer (Upwork) en.pdf" }
+                ]
+            },
+            {
+                name: "Instructor Awards",
+                type: "folder",
+                children: [
+                    { name: "sccd.pdf", type: "file", path: "Certificates/Instructor Awards/sccd.pdf" },
+                    { name: "sh 1 (1).pdf", type: "file", path: "Certificates/Instructor Awards/sh 1 (1).pdf" }
+                ]
+            },
+            {
+                name: "Technical skills",
+                type: "folder",
+                children: [
+                    { name: "Master Git & GitHub [Arabic].pdf", type: "file", path: "Certificates/Technical skills/Master Git & GitHub Essential Skills for Developers[Arabic].pdf" }
+                ]
+            }
+        ];
 
         const skills = [
             { name: "Python (Pandas, NumPy, Scikit-learn)", level: 90 },
@@ -325,88 +387,141 @@
 
         // --- Helper Components ---
 
-        // *** NEW COMPONENT: Certificates Gallery ***
-        const CertificatesGallery = ({ isOpen, onClose }) => {
-            const [activeTab, setActiveTab] = useState(Object.keys(certificatesData)[0]);
-            const [selectedCert, setSelectedCert] = useState(certificatesData[Object.keys(certificatesData)[0]][0]);
+        // *** NEW COMPONENT: Recursive Folder/File Tree ***
+        const FileTreeItem = ({ item, level = 0, onSelectFile, selectedFile }) => {
+            const [isOpen, setIsOpen] = useState(false);
+            const isSelected = selectedFile && selectedFile.path === item.path;
+
+            const handleToggle = () => {
+                if (item.type === 'folder') {
+                    setIsOpen(!isOpen);
+                } else {
+                    onSelectFile(item);
+                }
+            };
+
+            return (
+                <div style={{ paddingLeft: `${level * 12}px` }}>
+                    <div 
+                        onClick={handleToggle}
+                        className={`flex items-center gap-2 py-1.5 px-2 cursor-pointer rounded-md transition-colors text-sm font-medium
+                            ${isSelected ? 'bg-cyan-900/40 text-cyan-400 border border-cyan-800' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
+                        `}
+                    >
+                        {item.type === 'folder' ? (
+                            <>
+                                {isOpen ? <ChevronDown className="w-4 h-4 text-slate-500" /> : <ChevronRight className="w-4 h-4 text-slate-500" />}
+                                <Folder className={`w-4 h-4 ${isOpen ? 'text-amber-400' : 'text-amber-500/80'}`} />
+                                <span className="truncate">{item.name}</span>
+                            </>
+                        ) : (
+                            <>
+                                <FileText className="w-4 h-4 text-slate-500" />
+                                <span className="truncate">{item.name}</span>
+                            </>
+                        )}
+                    </div>
+                    {item.type === 'folder' && isOpen && item.children && (
+                        <div>
+                            {item.children.map((child, idx) => (
+                                <FileTreeItem 
+                                    key={idx} 
+                                    item={child} 
+                                    level={level + 1} 
+                                    onSelectFile={onSelectFile}
+                                    selectedFile={selectedFile}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const CertificatesGalleryExplorer = ({ isOpen, onClose }) => {
+            const [selectedFile, setSelectedFile] = useState(null);
+
+            // Auto-select first file on open
+            useEffect(() => {
+                if (isOpen && !selectedFile) {
+                    // Try to find first file deeply
+                    const findFirstFile = (items) => {
+                        for (let item of items) {
+                            if (item.type === 'file') return item;
+                            if (item.children) {
+                                const found = findFirstFile(item.children);
+                                if (found) return found;
+                            }
+                        }
+                        return null;
+                    };
+                    const first = findFirstFile(certificatesStructure);
+                    if (first) setSelectedFile(first);
+                }
+            }, [isOpen]);
 
             if (!isOpen) return null;
 
             return (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="bg-slate-900 w-full max-w-6xl h-[90vh] rounded-2xl border border-slate-700 shadow-2xl flex flex-col overflow-hidden relative">
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="bg-slate-900 w-full max-w-[90vw] h-[90vh] rounded-2xl border border-slate-700 shadow-2xl flex flex-col overflow-hidden relative">
                         {/* Header */}
-                        <div className="flex justify-between items-center p-4 border-b border-slate-700 bg-slate-800">
+                        <div className="flex justify-between items-center p-3 border-b border-slate-700 bg-slate-800">
                             <div className="flex items-center gap-2">
-                                <Medal className="w-6 h-6 text-amber-400" />
-                                <h2 className="text-xl font-bold text-white">Certificates Gallery</h2>
+                                <FolderOpen className="w-5 h-5 text-amber-400" />
+                                <h2 className="text-lg font-bold text-white">Certificates Explorer</h2>
                             </div>
-                            <button onClick={onClose} className="p-2 hover:bg-slate-700 rounded-full transition-colors text-slate-400 hover:text-white">
-                                <X className="w-6 h-6" />
+                            <button onClick={onClose} className="p-1.5 hover:bg-slate-700 rounded-full transition-colors text-slate-400 hover:text-white">
+                                <X className="w-5 h-5" />
                             </button>
                         </div>
 
                         <div className="flex flex-1 overflow-hidden">
-                            {/* Sidebar / Folders */}
-                            <div className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col overflow-y-auto hidden md:flex">
-                                <div className="p-4 text-xs font-mono text-slate-500 uppercase tracking-wider">Folders</div>
-                                {Object.keys(certificatesData).map(category => (
-                                    <button
-                                        key={category}
-                                        onClick={() => { setActiveTab(category); setSelectedCert(certificatesData[category][0]); }}
-                                        className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-all ${activeTab === category ? 'bg-cyan-900/20 text-cyan-400 border-r-2 border-cyan-400' : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'}`}
-                                    >
-                                        <FolderOpen className="w-4 h-4" />
-                                        <span className="font-medium text-sm">{category}</span>
-                                    </button>
-                                ))}
+                            {/* Left Sidebar: Tree View */}
+                            <div className="w-72 bg-slate-950 border-r border-slate-800 flex flex-col overflow-y-auto">
+                                <div className="p-3">
+                                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 px-2">Certificates Root</div>
+                                    {certificatesStructure.map((item, idx) => (
+                                        <FileTreeItem 
+                                            key={idx} 
+                                            item={item} 
+                                            onSelectFile={setSelectedFile}
+                                            selectedFile={selectedFile}
+                                        />
+                                    ))}
+                                </div>
                             </div>
 
-                            {/* Content Area */}
-                            <div className="flex-1 flex flex-col h-full bg-slate-900">
-                                {/* Mobile Tabs */}
-                                <div className="md:hidden flex overflow-x-auto border-b border-slate-800 bg-slate-950 scrollbar-hide">
-                                    {Object.keys(certificatesData).map(category => (
-                                        <button
-                                            key={category}
-                                            onClick={() => { setActiveTab(category); setSelectedCert(certificatesData[category][0]); }}
-                                            className={`px-4 py-3 whitespace-nowrap text-sm ${activeTab === category ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-400'}`}
-                                        >
-                                            {category}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                {/* List of Certs in Category */}
-                                <div className="h-16 border-b border-slate-800 flex items-center px-4 gap-2 overflow-x-auto bg-slate-800/50">
-                                    {certificatesData[activeTab].map((cert, idx) => (
-                                        <button
-                                            key={idx}
-                                            onClick={() => setSelectedCert(cert)}
-                                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap flex items-center gap-2 ${selectedCert === cert ? 'bg-cyan-600 text-white shadow-lg' : 'bg-slate-800 text-slate-400 border border-slate-700 hover:border-cyan-500/50'}`}
-                                        >
-                                            <FileBadge className="w-3 h-3" /> {cert.title}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                {/* PDF Previewer */}
-                                <div className="flex-1 bg-slate-950 relative">
-                                    {selectedCert ? (
+                            {/* Right Content: PDF Viewer */}
+                            <div className="flex-1 flex flex-col h-full bg-slate-900 relative">
+                                {selectedFile ? (
+                                    <>
+                                        <div className="h-10 border-b border-slate-800 bg-slate-800/50 flex items-center px-4 justify-between">
+                                            <div className="flex items-center gap-2 text-sm text-slate-300">
+                                                <FileText className="w-4 h-4 text-cyan-400" />
+                                                <span className="truncate font-mono">{selectedFile.name}</span>
+                                            </div>
+                                            <a href={selectedFile.path} download className="text-xs flex items-center gap-1 text-cyan-400 hover:underline">
+                                                <Download className="w-3 h-3" /> Download
+                                            </a>
+                                        </div>
                                         <iframe 
-                                            src={`${selectedCert.file}#toolbar=0&navpanes=0`} 
-                                            className="w-full h-full border-none"
-                                            title={selectedCert.title}
+                                            src={`${selectedFile.path}#toolbar=0&navpanes=0&view=FitH`} 
+                                            className="w-full h-full border-none bg-slate-200"
+                                            title={selectedFile.name}
                                         >
                                             <div className="flex items-center justify-center h-full text-slate-400 flex-col gap-4">
                                                 <p>Preview not supported on this device.</p>
-                                                <a href={selectedCert.file} target="_blank" className="text-cyan-400 underline">Download File</a>
+                                                <a href={selectedFile.path} target="_blank" className="text-cyan-400 underline">Download File</a>
                                             </div>
                                         </iframe>
-                                    ) : (
-                                        <div className="flex items-center justify-center h-full text-slate-500">Select a certificate to view</div>
-                                    )}
-                                </div>
+                                    </>
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-4">
+                                        <FolderOpen className="w-16 h-16 opacity-20" />
+                                        <p>Select a certificate from the explorer to view.</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -619,8 +734,8 @@
             return (
                 <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden">
                     
-                    {/* Render the Gallery Modal Component */}
-                    <CertificatesGallery isOpen={isGalleryOpen} onClose={() => setIsGalleryOpen(false)} />
+                    {/* Render the Gallery Explorer Modal Component */}
+                    <CertificatesGalleryExplorer isOpen={isGalleryOpen} onClose={() => setIsGalleryOpen(false)} />
 
                     <div className="fixed inset-0 z-0 pointer-events-none">
                         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
