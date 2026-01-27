@@ -716,7 +716,7 @@
             const [isTyping, setIsTyping] = useState(false);
             const messagesEndRef = useRef(null);
 
-            useEffect(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), [messages]);
+            useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), [messages] });
 
             const handleSend = async () => {
                 if (!inputValue.trim()) return;
@@ -785,6 +785,13 @@
                     </nav>
 
                     <section className="relative pt-32 pb-20 px-6 max-w-6xl mx-auto z-10">
+                        
+                        <div className="w-full flex justify-center mb-6 animate-fade-up">
+                            <h2 className="text-xl md:text-2xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-cyan-300 tracking-tight text-center">
+                                Data Analytics Engineer | Microsoft Power BI Certified | Instructor
+                            </h2>
+                        </div>
+
                         <AnimatedSection className="flex flex-col md:flex-row items-center gap-12">
                             <div className="flex-1 space-y-6">
                                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/50 border border-cyan-900/50 text-cyan-400 text-sm font-mono"><span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>Open to Opportunities</div>
@@ -931,5 +938,3 @@
     </script>
 </body>
 </html>
-
-
