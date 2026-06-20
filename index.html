@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shahd Kordy | Data Analytics Engineer</title>
     
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
+    <!-- Stable CDNs to prevent future crashes -->
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Pinned Lucide to a stable version that perfectly matches the component logic -->
+    <script src="https://unpkg.com/lucide@0.292.0"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* Slate 900 - Medium Dark, very soothing */
+            background-color: #0f172a; /* Slate 900 - Medium Dark */
             color: #cbd5e1; /* Slate 300 text */
         }
         .font-mono {
@@ -49,13 +49,12 @@
         .animate-glow { animation: glow 3s infinite; }
         .animate-fade-up { animation: fadeInUp 0.5s ease-out forwards; }
         
-        /* Custom Scrollbar for Medium Dark Theme */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #1e293b; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #0ea5e9; }
 
-        /* Hide scrollbar for internal components but allow scroll */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -64,13 +63,16 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        // --- Setup ---
         const { useState, useEffect, useRef } = React;
 
-        // --- ICON FIX: Create React Components from Lucide Definitions ---
+        // --- ICON FIX: Safely Create React Components from Vanilla Lucide ---
         const createIconComponent = (iconName) => ({ color = "currentColor", size = 24, className = "", ...props }) => {
+            // Check if lucide and the specific icon exists to prevent crashes
+            if (typeof lucide === 'undefined' || !lucide.icons || !lucide.icons[iconName]) {
+                return null;
+            }
+            
             const iconData = lucide.icons[iconName];
-            if (!iconData) return null;
 
             return (
                 <svg
@@ -93,7 +95,6 @@
             );
         };
 
-        // List of icons used in the app
         const iconNames = [
             "BarChart3", "Database", "Code2", "BrainCircuit", "Presentation", "Briefcase", 
             "GraduationCap", "Mail", "Phone", "Linkedin", "MapPin", "Award", "Terminal", 
@@ -103,13 +104,11 @@
             "Facebook", "CreditCard", "Images", "Server", "Activity"
         ];
 
-        // Generate the Icon Components map
         const Icons = iconNames.reduce((acc, name) => {
             acc[name] = createIconComponent(name);
             return acc;
         }, {});
 
-        // Destructure Icons for easy use
         const { 
             BarChart3, Database, Code2, BrainCircuit, Presentation, Briefcase, 
             GraduationCap, Mail, Phone, Linkedin, MapPin, Award, Terminal, 
@@ -119,7 +118,7 @@
             Facebook, CreditCard, Images, Server, Activity
         } = Icons;
 
-        // --- Gemini Configuration (Placeholder) ---
+        // --- API & Data Configurations ---
         const apiKey = ""; 
 
         const callGemini = async (prompt, systemInstruction = "") => {
@@ -150,7 +149,6 @@
             }
         };
 
-        // --- Data ---
         const personalInfo = {
             name: "Shahd Kordy",
             roles: ["Data Analytics Engineer +1y", "Instructor + 3y", "Microsoft Power BI Certified", "Python Developer", "Data Storyteller"],
@@ -164,53 +162,52 @@
             cvFile: "Shahd_Kordy_CV.pdf" 
         };
 
-        // --- CERTIFICATES DATA STRUCTURE (UNCHANGED) ---
         const certificatesStructure = [
             {
-    name: "ai tools",
-    type: "folder",
-    children: [
-        {
-            name: "Google AI Professional Certificate",
-            type: "folder",
-            children: [
-                { name: "1.AI Fundamentals.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/1.AI Fundamentals.pdf" },
-                { name: "2.AI for Brainstorming and Planning.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/2.AI for Brainstorming and Planning.pdf" },
-                { name: "3.AI for Research and Insights.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/3.AI for Research and Insights.pdf" },
-                { name: "4.AI for Writing and Communicating.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/4.AI for Writing and Communicating.pdf" },
-                { name: "5.AI for Content Creation.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/5.AI for Content Creation.pdf" },
-                { name: "6.AI for Data Analysis.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/6.AI for Data Analysis.pdf" },
-                { name: "7.AI for App Building.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/7.AI for App Building.pdf" },
-                { name: "Google AI Professional Certificate.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/Google AI Professional Certificate.pdf" },
-                { name: "Google AI Professional Certificate_m.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/Google AI Professional Certificate_m.pdf" },
-                { name: "GoogleAIFundamentals_Badge20260227.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/GoogleAIFundamentals_Badge20260227-32-vq2dpm.pdf" },
-                { name: "google-ai-fundamentals-Badge.png", type: "file", path: "Certificates/Google AI Professional Certificate/google-ai-fundamentals-Badge.png" }
-            ]
-        },
-        {
-            name: "Anthropic Courses",
-            type: "folder",
-            children: [
-                { name: "1.Claude 101.pdf", type: "file", path: "Certificates/Anthropic Courses/1.Claude 101.obwwkghrhata-1779107522.pdf" },
-                { name: "2.Claude Code 101.pdf", type: "file", path: "Certificates/Anthropic Courses/2.Claude Code 101.4je6kin97xba-1779108492.pdf" },
-                { name: "3.Introduction to Claude Cowork.pdf", type: "file", path: "Certificates/Anthropic Courses/3.Introduction to Claude Cowork.8npvdfor53zf-1779108482.pdf" },
-                { name: "4.Claude Code in Action.pdf", type: "file", path: "Certificates/Anthropic Courses/4.Claude Code in Action.ms3344o87y6e-1779109292.pdf" },
-                { name: "5.AI Fluency Framework & Foundations.pdf", type: "file", path: "Certificates/Anthropic Courses/5.AI Fluency Framework & Foundations.f6k9s2k6xysr-1779109654.pdf" },
-                { name: "6.Building with the Claude API.pdf", type: "file", path: "Certificates/Anthropic Courses/6.Building with the Claude API.wbemi95hp8eh-1779111344.pdf" },
-                { name: "7.Introduction to Model Context Protocol.pdf", type: "file", path: "Certificates/Anthropic Courses/7.Introduction to Model Context Protocol.7j8ovj6eyivn-1779111635.pdf" },
-                { name: "8.AI Fluency for Educators.pdf", type: "file", path: "Certificates/Anthropic Courses/8.AI Fluency for educators.q3oa4sxyaofi-1779111911.pdf" },
-                { name: "9.AI Fluency for Students.pdf", type: "file", path: "Certificates/Anthropic Courses/9.AI Fluency for students.5pcgi7z9go9j-1779112221.pdf" },
-                { name: "10.Model Context Protocol Advanced Topics.pdf", type: "file", path: "Certificates/Anthropic Courses/10.Model Context Protocol Advanced Topics.xt79do7dvpba-1779112687.pdf" },
-                { name: "13.Teaching AI Fluency.pdf", type: "file", path: "Certificates/Anthropic Courses/13.Teaching AI Fluency.g8w26zyp3o9-1779115125.pdf" },
-                { name: "14.AI Fluency for Nonprofits.pdf", type: "file", path: "Certificates/Anthropic Courses/14.AI Fluency for nonprofits.o3crygkf6kok-1779115911.pdf" },
-                { name: "15.Introduction to Agent Skills.pdf", type: "file", path: "Certificates/Anthropic Courses/15.Introduction to agent skills.tb7y4fe6bdgj-1779115993.pdf" },
-                { name: "16.Introduction to Subagents.pdf", type: "file", path: "Certificates/Anthropic Courses/16.Introduction to subagents.42x92rcmxsd3-1779116068.pdf" },
-                { name: "17.AI Capabilities and Limitations.pdf", type: "file", path: "Certificates/Anthropic Courses/17.AI Capabilities and Limitations.-o3crygkf6kok-1779115911.pdf" },
-                { name: "18.AI Fluency for Small Businesses.pdf", type: "file", path: "Certificates/Anthropic Courses/18.AI Fluency for Small Businesses.2iskcpek6m5e-1779116747.pdf" }
-            ]
-        }
-    ]
-},
+                name: "ai tools",
+                type: "folder",
+                children: [
+                    {
+                        name: "Google AI Professional Certificate",
+                        type: "folder",
+                        children: [
+                            { name: "1.AI Fundamentals.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/1.AI Fundamentals.pdf" },
+                            { name: "2.AI for Brainstorming and Planning.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/2.AI for Brainstorming and Planning.pdf" },
+                            { name: "3.AI for Research and Insights.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/3.AI for Research and Insights.pdf" },
+                            { name: "4.AI for Writing and Communicating.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/4.AI for Writing and Communicating.pdf" },
+                            { name: "5.AI for Content Creation.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/5.AI for Content Creation.pdf" },
+                            { name: "6.AI for Data Analysis.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/6.AI for Data Analysis.pdf" },
+                            { name: "7.AI for App Building.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/7.AI for App Building.pdf" },
+                            { name: "Google AI Professional Certificate.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/Google AI Professional Certificate.pdf" },
+                            { name: "Google AI Professional Certificate_m.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/Google AI Professional Certificate_m.pdf" },
+                            { name: "GoogleAIFundamentals_Badge20260227.pdf", type: "file", path: "Certificates/Google AI Professional Certificate/GoogleAIFundamentals_Badge20260227-32-vq2dpm.pdf" },
+                            { name: "google-ai-fundamentals-Badge.png", type: "file", path: "Certificates/Google AI Professional Certificate/google-ai-fundamentals-Badge.png" }
+                        ]
+                    },
+                    {
+                        name: "Anthropic Courses",
+                        type: "folder",
+                        children: [
+                            { name: "1.Claude 101.pdf", type: "file", path: "Certificates/Anthropic Courses/1.Claude 101.obwwkghrhata-1779107522.pdf" },
+                            { name: "2.Claude Code 101.pdf", type: "file", path: "Certificates/Anthropic Courses/2.Claude Code 101.4je6kin97xba-1779108492.pdf" },
+                            { name: "3.Introduction to Claude Cowork.pdf", type: "file", path: "Certificates/Anthropic Courses/3.Introduction to Claude Cowork.8npvdfor53zf-1779108482.pdf" },
+                            { name: "4.Claude Code in Action.pdf", type: "file", path: "Certificates/Anthropic Courses/4.Claude Code in Action.ms3344o87y6e-1779109292.pdf" },
+                            { name: "5.AI Fluency Framework & Foundations.pdf", type: "file", path: "Certificates/Anthropic Courses/5.AI Fluency Framework & Foundations.f6k9s2k6xysr-1779109654.pdf" },
+                            { name: "6.Building with the Claude API.pdf", type: "file", path: "Certificates/Anthropic Courses/6.Building with the Claude API.wbemi95hp8eh-1779111344.pdf" },
+                            { name: "7.Introduction to Model Context Protocol.pdf", type: "file", path: "Certificates/Anthropic Courses/7.Introduction to Model Context Protocol.7j8ovj6eyivn-1779111635.pdf" },
+                            { name: "8.AI Fluency for Educators.pdf", type: "file", path: "Certificates/Anthropic Courses/8.AI Fluency for educators.q3oa4sxyaofi-1779111911.pdf" },
+                            { name: "9.AI Fluency for Students.pdf", type: "file", path: "Certificates/Anthropic Courses/9.AI Fluency for students.5pcgi7z9go9j-1779112221.pdf" },
+                            { name: "10.Model Context Protocol Advanced Topics.pdf", type: "file", path: "Certificates/Anthropic Courses/10.Model Context Protocol Advanced Topics.xt79do7dvpba-1779112687.pdf" },
+                            { name: "13.Teaching AI Fluency.pdf", type: "file", path: "Certificates/Anthropic Courses/13.Teaching AI Fluency.g8w26zyp3o9-1779115125.pdf" },
+                            { name: "14.AI Fluency for Nonprofits.pdf", type: "file", path: "Certificates/Anthropic Courses/14.AI Fluency for nonprofits.o3crygkf6kok-1779115911.pdf" },
+                            { name: "15.Introduction to Agent Skills.pdf", type: "file", path: "Certificates/Anthropic Courses/15.Introduction to agent skills.tb7y4fe6bdgj-1779115993.pdf" },
+                            { name: "16.Introduction to Subagents.pdf", type: "file", path: "Certificates/Anthropic Courses/16.Introduction to subagents.42x92rcmxsd3-1779116068.pdf" },
+                            { name: "17.AI Capabilities and Limitations.pdf", type: "file", path: "Certificates/Anthropic Courses/17.AI Capabilities and Limitations.-o3crygkf6kok-1779115911.pdf" },
+                            { name: "18.AI Fluency for Small Businesses.pdf", type: "file", path: "Certificates/Anthropic Courses/18.AI Fluency for Small Businesses.2iskcpek6m5e-1779116747.pdf" }
+                        ]
+                    }
+                ]
+            },
             {
                 name: "business skills",
                 type: "folder",
@@ -353,8 +350,6 @@
             { name: "Tools (Git, GitHub, VS Code)", level: 85 },
         ];
 
-        // --- REVOLUTIONARY INTERACTIVE EXPERIENCE DATA ---
-        // Parsed explicitly from your exact text with zero omissions.
         const interactiveExperiences = [
             {
                 id: "exp1",
@@ -550,7 +545,6 @@
 
         // --- Helper Components ---
 
-        // *** INTERACTIVE EXPERIENCE VIEWER (THE REVOLUTIONARY UPGRADE) ***
         const InteractiveExperienceViewer = () => {
             const [activeIdx, setActiveIdx] = useState(0);
             const activeExp = interactiveExperiences[activeIdx];
@@ -558,13 +552,11 @@
 
             return (
                 <div className="flex flex-col lg:flex-row gap-6 bg-slate-800/40 p-4 sm:p-6 rounded-3xl border border-slate-700 shadow-2xl relative overflow-hidden min-h-[600px]">
-                    {/* Glowing background blob */}
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
-                    {/* Left Panel: The Interactive "Pipeline" Selector */}
                     <div className="lg:w-1/3 flex flex-col gap-2 relative z-10 border-b lg:border-b-0 lg:border-r border-slate-700/50 pb-6 lg:pb-0 lg:pr-4 h-64 lg:h-[600px] overflow-y-auto no-scrollbar">
                         <div className="sticky top-0 bg-slate-900/90 backdrop-blur-sm p-3 mb-2 rounded-xl border border-slate-700/50 shadow-sm z-20 flex justify-between items-center">
-                            <span className="text-sm font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2"><Activity className="w-4 h-4 text-cyan-400" /> Timeline</span>
+                            <span className="text-sm font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">{Activity && <Activity className="w-4 h-4 text-cyan-400" />} Timeline</span>
                             <span className="text-xs text-slate-500 bg-slate-800 px-2 py-1 rounded">{interactiveExperiences.length} Roles</span>
                         </div>
                         
@@ -575,9 +567,7 @@
                                     onClick={() => setActiveIdx(i)} 
                                     className={`relative w-full text-left p-4 rounded-xl transition-all duration-300 group ${activeIdx === i ? 'bg-slate-800/80 border border-cyan-500/50 shadow-[0_0_15px_rgba(6,182,212,0.15)] translate-x-2' : 'hover:bg-slate-800 border border-transparent'}`}
                                 >
-                                    {/* Connection Dot */}
                                     <div className={`absolute -left-[21px] top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 transition-all duration-300 ${activeIdx === i ? 'bg-cyan-400 border-cyan-200 shadow-[0_0_10px_rgba(6,182,212,0.8)] scale-125' : 'bg-slate-800 border-slate-600 group-hover:border-cyan-500 group-hover:bg-cyan-900'}`}></div>
-                                    
                                     <div className={`text-xs font-mono mb-1 ${activeIdx === i ? 'text-cyan-400' : 'text-slate-500'}`}>{exp.period}</div>
                                     <div className={`text-sm sm:text-base font-bold leading-tight ${activeIdx === i ? 'text-white' : 'text-slate-300 group-hover:text-slate-100'}`}>{exp.company.split('|')[0].trim()}</div>
                                     <div className="text-xs text-slate-400 mt-1 truncate">{exp.role}</div>
@@ -586,16 +576,13 @@
                         </div>
                     </div>
 
-                    {/* Right Panel: The Dynamic Master Detail Pane */}
                     <div className="lg:w-2/3 relative z-10 flex flex-col h-full lg:h-[600px] overflow-y-auto custom-scrollbar pr-2">
                         <div key={activeIdx} className="animate-in fade-in slide-in-from-right-8 duration-500 ease-out flex-1">
-                            
-                            {/* Header Section */}
                             <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-700/50 mb-6">
                                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                                     <div className="flex items-center gap-4">
                                         <div className="w-14 h-14 bg-slate-800 rounded-xl border border-slate-700 flex items-center justify-center shadow-inner">
-                                            <Icon className="w-7 h-7 text-cyan-400" />
+                                            {Icon && <Icon className="w-7 h-7 text-cyan-400" />}
                                         </div>
                                         <div>
                                             <h2 className="text-2xl font-extrabold text-white leading-tight">{activeExp.role}</h2>
@@ -604,26 +591,23 @@
                                     </div>
                                 </div>
                                 
-                                {/* Tags for Type and Location */}
                                 <div className="flex flex-wrap gap-2 mt-2">
-                                    <span className="px-3 py-1 bg-blue-900/30 border border-blue-700/50 text-blue-300 text-xs font-bold rounded-full flex items-center gap-1"><Briefcase className="w-3 h-3" /> {activeExp.type}</span>
-                                    <span className="px-3 py-1 bg-purple-900/30 border border-purple-700/50 text-purple-300 text-xs font-bold rounded-full flex items-center gap-1"><MapPin className="w-3 h-3" /> {activeExp.location}</span>
-                                    <span className="px-3 py-1 bg-slate-800 border border-slate-700 text-slate-400 text-xs font-mono rounded-full flex items-center gap-1"><Clock className="w-3 h-3" /> {activeExp.period}</span>
+                                    <span className="px-3 py-1 bg-blue-900/30 border border-blue-700/50 text-blue-300 text-xs font-bold rounded-full flex items-center gap-1">{Briefcase && <Briefcase className="w-3 h-3" />} {activeExp.type}</span>
+                                    <span className="px-3 py-1 bg-purple-900/30 border border-purple-700/50 text-purple-300 text-xs font-bold rounded-full flex items-center gap-1">{MapPin && <MapPin className="w-3 h-3" />} {activeExp.location}</span>
+                                    <span className="px-3 py-1 bg-slate-800 border border-slate-700 text-slate-400 text-xs font-mono rounded-full flex items-center gap-1">{Clock && <Clock className="w-3 h-3" />} {activeExp.period}</span>
                                 </div>
                             </div>
 
-                            {/* Detailed Blocks */}
                             <div className="space-y-4 pb-4">
                                 {activeExp.blocks.map((block, idx) => (
                                     <div key={idx} className="bg-slate-800/60 p-5 rounded-2xl border-l-4 border-cyan-500 hover:bg-slate-800 transition-colors shadow-sm">
                                         <h4 className="text-cyan-300 font-bold mb-2 flex items-center gap-2">
-                                            <Server className="w-4 h-4 opacity-70" /> {block.title}
+                                            {Server && <Server className="w-4 h-4 opacity-70" />} {block.title}
                                         </h4>
                                         <p className="text-slate-300 text-sm leading-relaxed">{block.text}</p>
                                     </div>
                                 ))}
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -657,10 +641,10 @@
                             <div className="flex items-center gap-3">
                                 {history.length > 0 ? (
                                     <button onClick={handleBack} className="p-2 bg-slate-800 hover:bg-slate-700 rounded-full text-slate-300 transition-all flex items-center gap-2 pr-4 group">
-                                        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" /> <span className="text-sm font-bold">Back</span>
+                                        {ArrowLeft && <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />} <span className="text-sm font-bold">Back</span>
                                     </button>
                                 ) : (
-                                    <div className="p-2 bg-amber-500/20 rounded-lg"><Medal className="w-6 h-6 text-amber-400" /></div>
+                                    <div className="p-2 bg-amber-500/20 rounded-lg">{Medal && <Medal className="w-6 h-6 text-amber-400" />}</div>
                                 )}
                                 <div>
                                     <h2 className="text-xl font-bold text-white capitalize flex items-center gap-2">
@@ -670,7 +654,7 @@
                                 </div>
                             </div>
                             <button onClick={onClose} className="p-2 hover:bg-slate-700 rounded-full transition-colors text-slate-400 hover:text-white">
-                                <X className="w-6 h-6" />
+                                {X && <X className="w-6 h-6" />}
                             </button>
                         </div>
                         <div className="flex-1 overflow-y-auto p-8 bg-slate-900/50">
@@ -680,14 +664,14 @@
                                         <div key={idx} onClick={() => handleFolderClick(item)} className="group bg-slate-800 p-8 rounded-2xl border border-slate-700 hover:border-cyan-500 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-cyan-500/20 flex flex-col items-center justify-center gap-4 text-center h-56 relative overflow-hidden">
                                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-amber-300 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
                                             <div className="w-20 h-20 bg-slate-900 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform border border-slate-700 group-hover:border-cyan-500/50 shadow-inner">
-                                                <Folder className="w-10 h-10 text-amber-500 group-hover:text-cyan-400 transition-colors" />
+                                                {Folder && <Folder className="w-10 h-10 text-amber-500 group-hover:text-cyan-400 transition-colors" />}
                                             </div>
                                             <div>
                                                 <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors">{item.name}</h3>
                                                 <span className="text-sm text-slate-500 mt-1 block">{item.children ? item.children.length : 0} items inside</span>
                                             </div>
                                             <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-2 group-hover:translate-x-0">
-                                                <ChevronRight className="w-5 h-5 text-cyan-400" />
+                                                {ChevronRight && <ChevronRight className="w-5 h-5 text-cyan-400" />}
                                             </div>
                                         </div>
                                     ))}
@@ -699,10 +683,10 @@
                                         <div key={idx} className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-2xl flex flex-col h-[600px] hover:shadow-cyan-500/20 transition-shadow duration-300">
                                             <div className="bg-slate-900 p-4 border-b border-slate-700 flex justify-between items-center">
                                                 <div className="flex items-center gap-3 overflow-hidden">
-                                                    <div className="p-1.5 bg-red-500/20 rounded text-red-400"><FileText className="w-4 h-4" /></div>
+                                                    <div className="p-1.5 bg-red-500/20 rounded text-red-400">{FileText && <FileText className="w-4 h-4" />}</div>
                                                     <span className="text-sm font-bold text-slate-200 truncate" title={file.name}>{file.name}</span>
                                                 </div>
-                                                <a href={file.path} download className="p-2 bg-slate-800 border border-slate-700 hover:bg-cyan-600 hover:border-cyan-500 rounded-lg text-slate-400 hover:text-white transition-all group" title="Download Original"><Download className="w-4 h-4 group-hover:animate-bounce" /></a>
+                                                <a href={file.path} download className="p-2 bg-slate-800 border border-slate-700 hover:bg-cyan-600 hover:border-cyan-500 rounded-lg text-slate-400 hover:text-white transition-all group" title="Download Original">{Download && <Download className="w-4 h-4 group-hover:animate-bounce" />}</a>
                                             </div>
                                             <div className="flex-1 bg-slate-200 relative">
                                                 <iframe src={`${file.path}#toolbar=0&navpanes=0&view=FitH`} className="w-full h-full border-none" title={file.name} loading="lazy"></iframe>
@@ -800,11 +784,11 @@
                     <div className="bg-slate-800 p-5 rounded-xl h-full flex flex-col relative z-10">
                         <div className="flex justify-between items-start mb-3">
                             <div className="p-2 bg-slate-900 rounded-lg group-hover:bg-cyan-900/30 transition-colors">
-                                <Icon className="w-6 h-6 text-cyan-400" />
+                                {Icon && <Icon className="w-6 h-6 text-cyan-400" />}
                             </div>
                             {verified ? (
                                 <div className="flex items-center gap-1 text-green-400 animate-pulse">
-                                    <CheckCircle2 className="w-4 h-4" />
+                                    {CheckCircle2 && <CheckCircle2 className="w-4 h-4" />}
                                     <span className="text-[10px] font-bold uppercase tracking-wider">Verified</span>
                                 </div>
                             ) : (
@@ -851,16 +835,16 @@
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
                     <div className="p-6 flex-1 flex flex-col relative z-10">
                         <div className="flex justify-between items-start mb-4">
-                            <div className="p-2 bg-slate-900 rounded-lg group-hover:bg-cyan-900/30 transition-colors"><Layers className="w-6 h-6 text-cyan-400" /></div>
+                            <div className="p-2 bg-slate-900 rounded-lg group-hover:bg-cyan-900/30 transition-colors">{Layers && <Layers className="w-6 h-6 text-cyan-400" />}</div>
                             <span className="text-xs font-semibold text-slate-400 border border-slate-600 px-2 py-1 rounded-full bg-slate-900/50">{project.category}</span>
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">{project.title}</h3>
                         <p className="text-slate-400 text-sm mb-4 flex-1">{project.desc}</p>
                         <div className="mb-4">
                             {insight ? (
-                                <div className="bg-cyan-950/30 border border-cyan-900/50 p-3 rounded-lg animate-fade-in"><div className="flex items-center gap-2 mb-1 text-cyan-300 text-xs font-bold uppercase tracking-wide"><Sparkles className="w-3 h-3" /> AI Analysis</div><p className="text-xs text-slate-300 leading-relaxed italic">"{insight}"</p></div>
+                                <div className="bg-cyan-950/30 border border-cyan-900/50 p-3 rounded-lg animate-fade-in"><div className="flex items-center gap-2 mb-1 text-cyan-300 text-xs font-bold uppercase tracking-wide">{Sparkles && <Sparkles className="w-3 h-3" />} AI Analysis</div><p className="text-xs text-slate-300 leading-relaxed italic">"{insight}"</p></div>
                             ) : (
-                                <button onClick={generateInsight} disabled={loading} className="w-full py-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 rounded-lg text-xs font-semibold text-cyan-400 flex items-center justify-center gap-2 transition-all">{loading ? <span className="animate-pulse">Analyzing...</span> : <><Sparkles className="w-3 h-3" /> Technical Insight</>}</button>
+                                <button onClick={generateInsight} disabled={loading} className="w-full py-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 rounded-lg text-xs font-semibold text-cyan-400 flex items-center justify-center gap-2 transition-all">{loading ? <span className="animate-pulse">Analyzing...</span> : <>{Sparkles && <Sparkles className="w-3 h-3" />} Technical Insight</>}</button>
                             )}
                         </div>
                         <div className="flex flex-wrap gap-2 mt-auto">{project.tech.split(', ').map((tag, i) => (<span key={i} className="text-xs font-medium text-cyan-300 bg-cyan-900/30 border border-cyan-800/50 px-2 py-1 rounded">{tag}</span>))}</div>
@@ -894,19 +878,19 @@
                     {isOpen && (
                         <div className="bg-slate-800 border border-slate-700 w-80 sm:w-96 h-96 rounded-2xl shadow-2xl mb-4 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
                             <div className="bg-slate-900 p-4 border-b border-slate-700 flex justify-between items-center">
-                                <div className="flex items-center gap-2"><div className="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center"><Bot className="w-5 h-5 text-white" /></div><div><h4 className="text-sm font-bold text-white">Shahd's AI Agent</h4><div className="flex items-center gap-1"><span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span><span className="text-[10px] text-slate-400 font-medium">Online</span></div></div></div>
-                                <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+                                <div className="flex items-center gap-2"><div className="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center">{Bot && <Bot className="w-5 h-5 text-white" />}</div><div><h4 className="text-sm font-bold text-white">Shahd's AI Agent</h4><div className="flex items-center gap-1"><span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span><span className="text-[10px] text-slate-400 font-medium">Online</span></div></div></div>
+                                <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white">{X && <X className="w-5 h-5" />}</button>
                             </div>
                             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-900/50">
                                 {messages.map((msg, idx) => (<div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}><div className={`max-w-[80%] p-3 rounded-2xl text-sm ${msg.role === 'user' ? 'bg-cyan-600 text-white rounded-br-none shadow-md' : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-bl-none shadow-md'}`}>{msg.text}</div></div>))}
                                 {isTyping && <div className="flex justify-start"><div className="bg-slate-800 p-3 rounded-2xl rounded-bl-none border border-slate-700 shadow-md flex gap-1"><span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce"></span><span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce delay-100"></span><span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce delay-200"></span></div></div>}
                                 <div ref={messagesEndRef} />
                             </div>
-                            <div className="p-3 bg-slate-900 border-t border-slate-700"><div className="relative"><input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder="Ask me anything..." className="w-full bg-slate-800 text-white text-sm rounded-full pl-4 pr-10 py-2.5 border border-slate-700 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500" /><button onClick={handleSend} disabled={!inputValue.trim()} className="absolute right-1 top-1 p-1.5 bg-cyan-600 rounded-full text-white hover:bg-cyan-500 disabled:opacity-50 transition-colors"><Send className="w-4 h-4" /></button></div></div>
+                            <div className="p-3 bg-slate-900 border-t border-slate-700"><div className="relative"><input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder="Ask me anything..." className="w-full bg-slate-800 text-white text-sm rounded-full pl-4 pr-10 py-2.5 border border-slate-700 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500" /><button onClick={handleSend} disabled={!inputValue.trim()} className="absolute right-1 top-1 p-1.5 bg-cyan-600 rounded-full text-white hover:bg-cyan-500 disabled:opacity-50 transition-colors">{Send && <Send className="w-4 h-4" />}</button></div></div>
                         </div>
                     )}
                     <button onClick={() => setIsOpen(!isOpen)} className="group flex items-center justify-center w-14 h-14 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] transition-all hover:scale-105">
-                        {isOpen ? <X className="w-6 h-6 text-white" /> : <MessageSquare className="w-6 h-6 text-white" />}
+                        {isOpen ? (X ? <X className="w-6 h-6 text-white" /> : "X") : (MessageSquare ? <MessageSquare className="w-6 h-6 text-white" /> : "💬")}
                         {!isOpen && <span className="absolute -top-1 -right-1 flex h-3 w-3"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span>}
                     </button>
                 </div>
@@ -923,7 +907,6 @@
                     
                     <CardGallery isOpen={isGalleryOpen} onClose={() => setIsGalleryOpen(false)} />
 
-                    {/* Subtle Background Elements */}
                     <div className="fixed inset-0 z-0 pointer-events-none">
                         <div className="absolute inset-0 bg-[linear-gradient(to_right,#334155_1px,transparent_1px),linear-gradient(to_bottom,#334155_1px,transparent_1px)] bg-[size:32px_32px] opacity-20"></div>
                         <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -933,16 +916,15 @@
                     <nav className="fixed top-0 w-full z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-700/50 shadow-sm">
                         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
                             <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent flex items-center gap-2">
-                                <Terminal className="w-6 h-6 text-cyan-400" /> SHAHD M KORDY_
+                                {Terminal && <Terminal className="w-6 h-6 text-cyan-400" />} SHAHD M KORDY_
                             </div>
                             <div className="flex gap-4 items-center">
-                                {/* Social Links in Header */}
-                                <a href={personalInfo.linkedin} target="_blank" className="text-slate-400 hover:text-cyan-400 transition-colors"><Linkedin className="w-5 h-5" /></a>
-                                <a href={personalInfo.facebook} target="_blank" className="text-slate-400 hover:text-cyan-400 transition-colors"><Facebook className="w-5 h-5" /></a>
-                                <a href={personalInfo.instapay} target="_blank" className="text-slate-400 hover:text-cyan-400 transition-colors" title="Support via InstaPay"><CreditCard className="w-5 h-5" /></a>
+                                <a href={personalInfo.linkedin} target="_blank" className="text-slate-400 hover:text-cyan-400 transition-colors">{Linkedin && <Linkedin className="w-5 h-5" />}</a>
+                                <a href={personalInfo.facebook} target="_blank" className="text-slate-400 hover:text-cyan-400 transition-colors">{Facebook && <Facebook className="w-5 h-5" />}</a>
+                                <a href={personalInfo.instapay} target="_blank" className="text-slate-400 hover:text-cyan-400 transition-colors" title="Support via InstaPay">{CreditCard && <CreditCard className="w-5 h-5" />}</a>
                                 
                                 <a href={`mailto:${personalInfo.email}`} className="hidden sm:flex px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-full text-sm font-semibold transition-colors border border-slate-700 text-slate-300 items-center gap-2 shadow-sm ml-2">
-                                    <Mail className="w-4 h-4 text-cyan-400" /> Contact Me
+                                    {Mail && <Mail className="w-4 h-4 text-cyan-400" />} Contact Me
                                 </a>
                             </div>
                         </div>
@@ -963,14 +945,14 @@
                                 <p className="text-lg md:text-xl text-slate-400 max-w-lg leading-relaxed border-l-4 border-cyan-500 pl-6">{personalInfo.summary}</p>
                                 
                                 <div className="flex flex-wrap gap-4 pt-4 items-center">
-                                    <button onClick={() => document.getElementById('projects').scrollIntoView({behavior: 'smooth'})} className="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-semibold transition-all hover:shadow-[0_0_15px_rgba(8,145,178,0.5)] flex items-center gap-2">View Projects <ChevronDown className="w-4 h-4" /></button>
+                                    <button onClick={() => document.getElementById('projects').scrollIntoView({behavior: 'smooth'})} className="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-semibold transition-all hover:shadow-[0_0_15px_rgba(8,145,178,0.5)] flex items-center gap-2">View Projects {ChevronDown && <ChevronDown className="w-4 h-4" />}</button>
                                     
                                     <button 
                                         onClick={() => setIsGalleryOpen(true)}
                                         className="relative group px-6 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-lg font-bold transition-all flex items-center gap-2 overflow-hidden animate-glow shadow-md shadow-amber-500/20"
                                     >
                                         <div className="absolute inset-0 bg-white/40 group-hover:translate-x-full duration-500 transition-transform skew-x-12 -translate-x-full"></div>
-                                        <Medal className="w-5 h-5" /> Certificates Gallery
+                                        {Medal && <Medal className="w-5 h-5" />} Certificates Gallery
                                     </button>
 
                                     <a 
@@ -978,23 +960,21 @@
                                         target="_blank" 
                                         className="px-6 py-3 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white rounded-lg font-bold transition-all flex items-center gap-2 shadow-md hover:shadow-[0_0_15px_rgba(168,85,247,0.5)]"
                                     >
-                                        <MapPin className="w-5 h-5" /> Course Map
+                                        {MapPin && <MapPin className="w-5 h-5" />} Course Map
                                     </a>
 
                                     <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
                                         <a href={personalInfo.cvFile} target="_blank" className="px-5 py-3 bg-slate-800 border border-slate-600 hover:border-cyan-400 hover:text-cyan-400 text-slate-300 rounded-lg font-semibold transition-all flex items-center gap-2 hover:bg-slate-700">
-                                            <Eye className="w-4 h-4" /> Preview CV
+                                            {Eye && <Eye className="w-4 h-4" />} Preview CV
                                         </a>
                                         <a href={personalInfo.cvFile} download className="px-5 py-3 bg-slate-700 border border-slate-600 hover:bg-slate-600 text-white rounded-lg font-semibold transition-all flex items-center gap-2 shadow-sm hover:shadow-md">
-                                            <Download className="w-4 h-4" /> Download
+                                            {Download && <Download className="w-4 h-4" />} Download
                                         </a>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* UPDATED BIGGER IMAGE & ANIMATION CONTAINER */}
                             <div className="flex-1 w-full max-w-lg relative mt-10 md:mt-0 flex justify-center items-center">
-                                {/* Rotating rings */}
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <div className="w-[350px] h-[350px] sm:w-[400px] sm:h-[400px] rounded-full border border-slate-700/50 relative animate-spin-slow shadow-2xl bg-slate-800/30 backdrop-blur-sm flex items-center justify-center">
                                         <div className="absolute inset-4 rounded-full border border-dashed border-slate-600/50"></div>
@@ -1004,41 +984,36 @@
                                 
                                 <div className="absolute w-[350px] h-[350px] bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-full blur-[80px] opacity-30 animate-pulse"></div>
                                 
-                                {/* BIGGER IMAGE */}
                                 <img 
                                     src="photo.png" 
                                     alt="Shahd Kordy" 
                                     className="relative w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] object-cover rounded-full z-10 shadow-[0_0_50px_rgba(6,182,212,0.4)] border-4 border-slate-800"
                                 />
                                 
-                                {/* 1. Data Accuracy (Top Right) */}
                                 <div className="absolute top-0 -right-4 sm:-right-8 bg-slate-800/95 backdrop-blur border border-slate-700 p-4 rounded-xl shadow-xl animate-bounce z-20" style={{animationDuration: '3s'}}>
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-green-500/20 rounded-lg"><Database className="w-5 h-5 text-green-400" /></div>
+                                        <div className="p-2 bg-green-500/20 rounded-lg">{Database && <Database className="w-5 h-5 text-green-400" />}</div>
                                         <div><div className="text-xs text-slate-400 font-semibold">Data Accuracy</div><div className="font-bold text-white">100%</div></div>
                                     </div>
                                 </div>
 
-                                {/* 2. Dashboards (Bottom Left) */}
                                 <div className="absolute bottom-10 -left-4 sm:-left-8 bg-slate-800/95 backdrop-blur border border-slate-700 p-4 rounded-xl shadow-xl animate-bounce z-20" style={{animationDuration: '4s'}}>
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-purple-500/20 rounded-lg"><PieChart className="w-5 h-5 text-purple-400" /></div>
+                                        <div className="p-2 bg-purple-500/20 rounded-lg">{PieChart && <PieChart className="w-5 h-5 text-purple-400" />}</div>
                                         <div><div className="text-xs text-slate-400 font-semibold">Dashboards</div><div className="font-bold text-white">Interactive</div></div>
                                     </div>
                                 </div>
 
-                                {/* 3. Power BI Certified (Top Left) */}
                                 <div className="absolute top-16 -left-10 sm:-left-16 bg-slate-800/95 backdrop-blur border border-slate-700 p-4 rounded-xl shadow-xl animate-bounce z-20" style={{animationDuration: '5s'}}>
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-amber-500/20 rounded-lg"><Award className="w-5 h-5 text-amber-400" /></div>
+                                        <div className="p-2 bg-amber-500/20 rounded-lg">{Award && <Award className="w-5 h-5 text-amber-400" />}</div>
                                         <div><div className="text-xs text-slate-400 font-semibold">Microsoft</div><div className="font-bold text-white">Certified</div></div>
                                     </div>
                                 </div>
 
-                                {/* 4. Business Analysis (Bottom Right) */}
                                 <div className="absolute bottom-4 -right-2 sm:-right-6 bg-slate-800/95 backdrop-blur border border-slate-700 p-4 rounded-xl shadow-xl animate-bounce z-20" style={{animationDuration: '6s'}}>
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-blue-500/20 rounded-lg"><LineChart className="w-5 h-5 text-blue-400" /></div>
+                                        <div className="p-2 bg-blue-500/20 rounded-lg">{LineChart && <LineChart className="w-5 h-5 text-blue-400" />}</div>
                                         <div><div className="text-xs text-slate-400 font-semibold">Business</div><div className="font-bold text-white">Analysis</div></div>
                                     </div>
                                 </div>
@@ -1047,34 +1022,33 @@
                         </AnimatedSection>
                     </section>
 
-                    {/* 4 STATS SECTION */}
                     <section className="py-12 relative z-10 border-t border-slate-800/50 bg-slate-900/50">
                         <div className="max-w-6xl mx-auto px-6">
                             <AnimatedSection className="grid grid-cols-2 md:grid-cols-4 gap-6">
                                 <div className="bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-lg hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:-translate-y-2 transition-all text-center group">
                                     <div className="w-12 h-12 bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform border border-blue-500/30">
-                                        <Linkedin className="w-6 h-6 text-blue-400" />
+                                        {Linkedin && <Linkedin className="w-6 h-6 text-blue-400" />}
                                     </div>
                                     <div className="text-3xl font-extrabold text-white mb-1">+5,000</div>
                                     <div className="text-sm font-semibold text-slate-400">LinkedIn Followers</div>
                                 </div>
                                 <div className="bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-lg hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:-translate-y-2 transition-all text-center group">
                                     <div className="w-12 h-12 bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform border border-amber-500/30">
-                                        <Award className="w-6 h-6 text-amber-400" />
+                                        {Award && <Award className="w-6 h-6 text-amber-400" />}
                                     </div>
                                     <div className="text-xl md:text-2xl mt-1 font-extrabold text-white mb-2">Microsoft</div>
                                     <div className="text-sm font-semibold text-slate-400">Certified</div>
                                 </div>
                                 <div className="bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-lg hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:-translate-y-2 transition-all text-center group">
                                     <div className="w-12 h-12 bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform border border-emerald-500/30">
-                                        <Users className="w-6 h-6 text-emerald-400" />
+                                        {Users && <Users className="w-6 h-6 text-emerald-400" />}
                                     </div>
                                     <div className="text-3xl font-extrabold text-white mb-1">+1,500</div>
                                     <div className="text-sm font-semibold text-slate-400">Trainees Managed</div>
                                 </div>
                                 <div className="bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-lg hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:-translate-y-2 transition-all text-center group">
                                     <div className="w-12 h-12 bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform border border-purple-500/30">
-                                        <Clock className="w-6 h-6 text-purple-400" />
+                                        {Clock && <Clock className="w-6 h-6 text-purple-400" />}
                                     </div>
                                     <div className="text-3xl font-extrabold text-white mb-1">+600</div>
                                     <div className="text-sm font-semibold text-slate-400">Training Hours</div>
@@ -1083,7 +1057,6 @@
                         </div>
                     </section>
 
-                    {/* NEW: PROJECTS GALLERY BANNER */}
                     <section className="py-8 relative z-10">
                         <div className="max-w-6xl mx-auto px-6">
                             <AnimatedSection>
@@ -1092,7 +1065,7 @@
                                     <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                                         <div className="flex items-center gap-6">
                                             <div className="w-16 h-16 bg-gradient-to-tr from-cyan-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                                                <Images className="w-8 h-8 text-white" />
+                                                {Images && <Images className="w-8 h-8 text-white" />}
                                             </div>
                                             <div>
                                                 <h3 className="text-3xl font-extrabold text-white mb-1">My Projects Gallery</h3>
@@ -1100,7 +1073,7 @@
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2 text-cyan-400 font-bold bg-cyan-950/50 border border-cyan-800/50 px-6 py-3 rounded-xl group-hover:bg-cyan-500 group-hover:text-white transition-all">
-                                            Explore Gallery <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                                            Explore Gallery {ChevronRight && <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />}
                                         </div>
                                     </div>
                                 </a>
@@ -1114,9 +1087,9 @@
                                 <div className="text-center mb-16"><h2 className="text-3xl font-bold text-white mb-4">My Data Methodology</h2><div className="w-20 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto rounded-full shadow-[0_0_10px_rgba(6,182,212,0.5)]"></div></div>
                                 <div className="relative grid grid-cols-1 md:grid-cols-3 gap-12">
                                     <div className="hidden md:block absolute top-8 left-[16%] right-[16%] h-0.5 bg-slate-700 z-0 border-t border-dashed border-slate-600"></div>
-                                    <div className="flex flex-col items-center text-center relative z-10"><div className="w-16 h-16 bg-slate-900 rounded-2xl border border-slate-700 flex items-center justify-center mb-4 shadow-lg group hover:border-cyan-500 transition-all transform hover:-translate-y-2"><Database className="w-8 h-8 text-slate-400 group-hover:text-cyan-400" /></div><h4 className="text-lg font-bold text-white mb-1">Ingest & Clean</h4><p className="text-sm font-medium text-slate-400">ETL, SQL, Power Query</p></div>
-                                    <div className="flex flex-col items-center text-center relative z-10"><div className="w-16 h-16 bg-slate-900 rounded-2xl border border-slate-700 flex items-center justify-center mb-4 shadow-lg group hover:border-cyan-500 transition-all transform hover:-translate-y-2"><BrainCircuit className="w-8 h-8 text-slate-400 group-hover:text-cyan-400" /></div><h4 className="text-lg font-bold text-white mb-1">Analyze & Model</h4><p className="text-sm font-medium text-slate-400">Python, Pandas, Statistics</p></div>
-                                    <div className="flex flex-col items-center text-center relative z-10"><div className="w-16 h-16 bg-slate-900 rounded-2xl border border-slate-700 flex items-center justify-center mb-4 shadow-lg group hover:border-cyan-500 transition-all transform hover:-translate-y-2"><BarChart3 className="w-8 h-8 text-slate-400 group-hover:text-cyan-400" /></div><h4 className="text-lg font-bold text-white mb-1">Visualize & Act</h4><p className="text-sm font-medium text-slate-400">Power BI, Tableau</p></div>
+                                    <div className="flex flex-col items-center text-center relative z-10"><div className="w-16 h-16 bg-slate-900 rounded-2xl border border-slate-700 flex items-center justify-center mb-4 shadow-lg group hover:border-cyan-500 transition-all transform hover:-translate-y-2">{Database && <Database className="w-8 h-8 text-slate-400 group-hover:text-cyan-400" />}</div><h4 className="text-lg font-bold text-white mb-1">Ingest & Clean</h4><p className="text-sm font-medium text-slate-400">ETL, SQL, Power Query</p></div>
+                                    <div className="flex flex-col items-center text-center relative z-10"><div className="w-16 h-16 bg-slate-900 rounded-2xl border border-slate-700 flex items-center justify-center mb-4 shadow-lg group hover:border-cyan-500 transition-all transform hover:-translate-y-2">{BrainCircuit && <BrainCircuit className="w-8 h-8 text-slate-400 group-hover:text-cyan-400" />}</div><h4 className="text-lg font-bold text-white mb-1">Analyze & Model</h4><p className="text-sm font-medium text-slate-400">Python, Pandas, Statistics</p></div>
+                                    <div className="flex flex-col items-center text-center relative z-10"><div className="w-16 h-16 bg-slate-900 rounded-2xl border border-slate-700 flex items-center justify-center mb-4 shadow-lg group hover:border-cyan-500 transition-all transform hover:-translate-y-2">{BarChart3 && <BarChart3 className="w-8 h-8 text-slate-400 group-hover:text-cyan-400" />}</div><h4 className="text-lg font-bold text-white mb-1">Visualize & Act</h4><p className="text-sm font-medium text-slate-400">Power BI, Tableau</p></div>
                                 </div>
                             </AnimatedSection>
                         </div>
@@ -1124,10 +1097,9 @@
 
                     <section className="py-20 max-w-6xl mx-auto px-6 z-10 relative">
                         <div className="grid md:grid-cols-12 gap-12">
-                            {/* Skills Sidebar */}
                             <div className="md:col-span-4 space-y-12">
                                 <AnimatedSection>
-                                    <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2"><Terminal className="w-5 h-5 text-cyan-400" /> Technical Arsenal</h3>
+                                    <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">{Terminal && <Terminal className="w-5 h-5 text-cyan-400" />} Technical Arsenal</h3>
                                     <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 shadow-lg">{skills.map((skill, idx) => (<SkillBar key={idx} skill={skill} />))}</div>
                                 </AnimatedSection>
                                 <AnimatedSection>
@@ -1139,27 +1111,23 @@
                                 </AnimatedSection>
                             </div>
 
-                            {/* Main Content Area (Experience/Education) */}
                             <div className="md:col-span-8 space-y-16">
                                 <AnimatedSection>
                                     <div className="flex flex-wrap gap-4 mb-8 border-b border-slate-700 pb-2">
-                                        <button onClick={() => setActiveTab('experience')} className={`pb-2 text-lg font-bold transition-colors flex items-center gap-2 ${activeTab === 'experience' ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}><Briefcase className="w-4 h-4" /> Experience</button>
-                                        <button onClick={() => setActiveTab('education')} className={`pb-2 text-lg font-bold transition-colors flex items-center gap-2 ${activeTab === 'education' ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}><GraduationCap className="w-4 h-4" /> Education</button>
-                                        <button onClick={() => setActiveTab('certifications')} className={`pb-2 text-lg font-bold transition-colors flex items-center gap-2 ${activeTab === 'certifications' ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}><FileBadge className="w-4 h-4" /> Certifications</button>
+                                        <button onClick={() => setActiveTab('experience')} className={`pb-2 text-lg font-bold transition-colors flex items-center gap-2 ${activeTab === 'experience' ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}>{Briefcase && <Briefcase className="w-4 h-4" />} Experience</button>
+                                        <button onClick={() => setActiveTab('education')} className={`pb-2 text-lg font-bold transition-colors flex items-center gap-2 ${activeTab === 'education' ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}>{GraduationCap && <GraduationCap className="w-4 h-4" />} Education</button>
+                                        <button onClick={() => setActiveTab('certifications')} className={`pb-2 text-lg font-bold transition-colors flex items-center gap-2 ${activeTab === 'certifications' ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}>{FileBadge && <FileBadge className="w-4 h-4" />} Certifications</button>
                                     </div>
                                     
                                     <div className="space-y-4">
-                                        {/* NEW INTERACTIVE EXPERIENCE VIEWER */}
                                         {activeTab === 'experience' && <InteractiveExperienceViewer />}
-                                        
-                                        {/* OLD VIEWERS FOR EDUCATION/CERTS */}
                                         {activeTab === 'education' && education.map((edu, idx) => (<TimelineItem key={idx} data={edu} isLast={idx === education.length - 1} />))}
                                         {activeTab === 'certifications' && <div className="grid sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">{certifications.map((cert, idx) => (<CertificationCard key={idx} cert={cert} />))}</div>}
                                     </div>
                                 </AnimatedSection>
 
                                 <AnimatedSection>
-                                    <div id="projects" className="flex items-center justify-between mb-8"><h3 className="text-2xl font-bold text-white flex items-center gap-2"><Layers className="w-6 h-6 text-cyan-400" /> Featured Projects</h3><span className="text-sm text-cyan-300 font-bold bg-cyan-950/50 border border-cyan-800/50 px-3 py-1 rounded-full">Case Studies</span></div>
+                                    <div id="projects" className="flex items-center justify-between mb-8"><h3 className="text-2xl font-bold text-white flex items-center gap-2">{Layers && <Layers className="w-6 h-6 text-cyan-400" />} Featured Projects</h3><span className="text-sm text-cyan-300 font-bold bg-cyan-950/50 border border-cyan-800/50 px-3 py-1 rounded-full">Case Studies</span></div>
                                     <div className="grid sm:grid-cols-2 gap-6">{projects.map((proj, idx) => (<ProjectCard key={idx} project={proj} />))}</div>
                                 </AnimatedSection>
                             </div>
@@ -1170,15 +1138,14 @@
                         <div className="max-w-4xl mx-auto px-6 text-center">
                             <h2 className="text-3xl font-bold text-white mb-8">Let's Turn Your Data Into Decisions</h2>
                             <div className="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-                                <a href={`mailto:${personalInfo.email}`} className="flex items-center justify-center gap-3 px-6 py-4 bg-slate-800 rounded-xl hover:bg-slate-700 transition-colors border border-slate-700 group shadow-lg"><Mail className="w-5 h-5 text-cyan-400 group-hover:scale-110" /><div className="text-left"><div className="text-xs font-semibold text-slate-400">Email Me</div><div className="text-sm font-bold text-white">{personalInfo.email}</div></div></a>
-                                <a href={`tel:${personalInfo.phone}`} className="flex items-center justify-center gap-3 px-6 py-4 bg-slate-800 rounded-xl hover:bg-slate-700 transition-colors border border-slate-700 group shadow-lg"><Phone className="w-5 h-5 text-cyan-400 group-hover:scale-110" /><div className="text-left"><div className="text-xs font-semibold text-slate-400">Call Me</div><div className="text-sm font-bold text-white">{personalInfo.phone}</div></div></a>
+                                <a href={`mailto:${personalInfo.email}`} className="flex items-center justify-center gap-3 px-6 py-4 bg-slate-800 rounded-xl hover:bg-slate-700 transition-colors border border-slate-700 group shadow-lg">{Mail && <Mail className="w-5 h-5 text-cyan-400 group-hover:scale-110" />}<div className="text-left"><div className="text-xs font-semibold text-slate-400">Email Me</div><div className="text-sm font-bold text-white">{personalInfo.email}</div></div></a>
+                                <a href={`tel:${personalInfo.phone}`} className="flex items-center justify-center gap-3 px-6 py-4 bg-slate-800 rounded-xl hover:bg-slate-700 transition-colors border border-slate-700 group shadow-lg">{Phone && <Phone className="w-5 h-5 text-cyan-400 group-hover:scale-110" />}<div className="text-left"><div className="text-xs font-semibold text-slate-400">Call Me</div><div className="text-sm font-bold text-white">{personalInfo.phone}</div></div></a>
                             </div>
                             
-                            {/* Footer Social Links */}
                             <div className="flex justify-center gap-6 mb-12">
-                                <a href={personalInfo.linkedin} target="_blank" className="p-3 bg-slate-800 border border-slate-700 rounded-full text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all hover:-translate-y-1"><Linkedin className="w-6 h-6" /></a>
-                                <a href={personalInfo.facebook} target="_blank" className="p-3 bg-slate-800 border border-slate-700 rounded-full text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all hover:-translate-y-1"><Facebook className="w-6 h-6" /></a>
-                                <a href={personalInfo.instapay} target="_blank" className="p-3 bg-slate-800 border border-slate-700 rounded-full text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all hover:-translate-y-1" title="Support me on InstaPay"><CreditCard className="w-6 h-6" /></a>
+                                <a href={personalInfo.linkedin} target="_blank" className="p-3 bg-slate-800 border border-slate-700 rounded-full text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all hover:-translate-y-1">{Linkedin && <Linkedin className="w-6 h-6" />}</a>
+                                <a href={personalInfo.facebook} target="_blank" className="p-3 bg-slate-800 border border-slate-700 rounded-full text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all hover:-translate-y-1">{Facebook && <Facebook className="w-6 h-6" />}</a>
+                                <a href={personalInfo.instapay} target="_blank" className="p-3 bg-slate-800 border border-slate-700 rounded-full text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all hover:-translate-y-1" title="Support me on InstaPay">{CreditCard && <CreditCard className="w-6 h-6" />}</a>
                             </div>
 
                             <div className="text-slate-500 text-sm font-medium border-t border-slate-800 pt-8">© {new Date().getFullYear()} Shahd Kordy. Built with React & Tailwind CSS.</div>
