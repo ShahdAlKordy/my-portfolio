@@ -10,7 +10,9 @@
     <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.9/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+    
+    <!-- Pinned Exact Lucide Version (0.292.0) that matches your specific icon rendering logic -->
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.292.0/dist/umd/lucide.min.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
@@ -83,7 +85,6 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // --- Error Boundary to prevent full screen crashes ---
         class ErrorBoundary extends React.Component {
             constructor(props) {
                 super(props);
@@ -108,14 +109,13 @@
             }
         }
 
-        // --- Bulletproof Icon Component ---
+        // --- Exact Logic for Icons ---
         const createIconComponent = (iconName) => ({ color = "currentColor", size = 24, className = "", ...props }) => {
             try {
                 if (typeof window.lucide === 'undefined' || !window.lucide.icons || !window.lucide.icons[iconName]) {
-                    return null; // Fail silently, don't crash the app
+                    return null; 
                 }
                 const iconData = window.lucide.icons[iconName];
-                if (!Array.isArray(iconData)) return null;
 
                 return (
                     <svg
@@ -135,7 +135,7 @@
                     </svg>
                 );
             } catch (e) {
-                console.error("Icon Render Error:", e);
+                console.error("Icon Render Error for:", iconName, e);
                 return null;
             }
         };
