@@ -5,28 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shahd Kordy | Data Analytics Engineer</title>
     
-    <!-- Stable CDNs to prevent future crashes -->
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+    <!-- Super Stable CDNs (jsDelivr) to prevent ISP blocking issues in Egypt -->
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.9/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Pinned Lucide to a stable version that perfectly matches the component logic -->
-    <script src="https://unpkg.com/lucide@0.292.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* Slate 900 - Medium Dark */
-            color: #cbd5e1; /* Slate 300 text */
+            background-color: #0f172a;
+            color: #cbd5e1;
+            margin: 0;
+            padding: 0;
         }
         .font-mono {
             font-family: 'JetBrains Mono', monospace;
         }
         
-        /* Custom Animations */
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
@@ -49,7 +48,6 @@
         .animate-glow { animation: glow 3s infinite; }
         .animate-fade-up { animation: fadeInUp 0.5s ease-out forwards; }
         
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #1e293b; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
@@ -57,42 +55,89 @@
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Fallback Spinner */
+        .fallback-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #334155;
+            border-top: 4px solid #06b6d4;
+            border-radius: 50%;
+            animation: slow-spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <!-- Fallback UI if Internet/CDN is blocked -->
+    <div id="root">
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; padding: 20px;">
+            <div class="fallback-spinner"></div>
+            <h2 style="color: #fff; margin-bottom: 10px; font-family: sans-serif;">Loading Portfolio...</h2>
+            <p style="color: #94a3b8; max-width: 400px; font-family: sans-serif; font-size: 14px; line-height: 1.6;">
+                إذا استمرت هذه الشاشة، فهناك مشكلة في مزود الإنترنت الخاص بك تمنع تحميل المكتبات البرمجية. يرجى تجربة شبكة أخرى.
+            </p>
+        </div>
+    </div>
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // --- ICON FIX: Safely Create React Components from Vanilla Lucide ---
+        // --- Error Boundary to prevent full screen crashes ---
+        class ErrorBoundary extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = { hasError: false, error: null };
+            }
+            static getDerivedStateFromError(error) {
+                return { hasError: true, error };
+            }
+            componentDidCatch(error, errorInfo) {
+                console.error("Portfolio Crashed:", error, errorInfo);
+            }
+            render() {
+                if (this.state.hasError) {
+                    return (
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', padding: '20px', textAlign: 'center', backgroundColor: '#0f172a', color: '#ef4444' }}>
+                            <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px' }}>⚠️ حدث خطأ غير متوقع</h2>
+                            <p style={{ color: '#cbd5e1' }}>يرجى تحديث الصفحة. إذا استمرت المشكلة، يرجى مراجعة نافذة المطورين (Console).</p>
+                        </div>
+                    );
+                }
+                return this.props.children;
+            }
+        }
+
+        // --- Bulletproof Icon Component ---
         const createIconComponent = (iconName) => ({ color = "currentColor", size = 24, className = "", ...props }) => {
-            // Check if lucide and the specific icon exists to prevent crashes
-            if (typeof lucide === 'undefined' || !lucide.icons || !lucide.icons[iconName]) {
+            try {
+                if (typeof window.lucide === 'undefined' || !window.lucide.icons || !window.lucide.icons[iconName]) {
+                    return null; // Fail silently, don't crash the app
+                }
+                const iconData = window.lucide.icons[iconName];
+                if (!Array.isArray(iconData)) return null;
+
+                return (
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width={size}
+                        height={size}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke={color}
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`lucide lucide-${iconName} ${className}`}
+                        {...props}
+                    >
+                        {iconData.map(([tag, attrs], index) => React.createElement(tag, { ...attrs, key: index }))}
+                    </svg>
+                );
+            } catch (e) {
+                console.error("Icon Render Error:", e);
                 return null;
             }
-            
-            const iconData = lucide.icons[iconName];
-
-            return (
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={size}
-                    height={size}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke={color}
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className={`lucide lucide-${iconName} ${className}`}
-                    {...props}
-                >
-                    {iconData.map(([tag, attrs], index) => {
-                        return React.createElement(tag, { ...attrs, key: index });
-                    })}
-                </svg>
-            );
         };
 
         const iconNames = [
@@ -118,7 +163,7 @@
             Facebook, CreditCard, Images, Server, Activity
         } = Icons;
 
-        // --- API & Data Configurations ---
+        // --- Data ---
         const apiKey = ""; 
 
         const callGemini = async (prompt, systemInstruction = "") => {
@@ -140,11 +185,10 @@
                 }
                 );
 
-                if (!response.ok) throw new Error(`API call failed: ${response.statusText}`);
+                if (!response.ok) throw new Error(`API call failed`);
                 const data = await response.json();
                 return data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
             } catch (error) {
-                console.error("Gemini API Error:", error);
                 return "AI Service Unavailable (Check API Key).";
             }
         };
@@ -544,7 +588,6 @@
         ];
 
         // --- Helper Components ---
-
         const InteractiveExperienceViewer = () => {
             const [activeIdx, setActiveIdx] = useState(0);
             const activeExp = interactiveExperiences[activeIdx];
@@ -897,7 +940,6 @@
             );
         };
 
-        // --- Main App ---
         function Portfolio() {
             const [activeTab, setActiveTab] = useState('experience');
             const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -931,7 +973,6 @@
                     </nav>
 
                     <section className="relative pt-32 pb-20 px-6 max-w-6xl mx-auto z-10">
-                        
                         <div className="w-full flex justify-center mb-6 animate-fade-up">
                             <h2 className="text-xl md:text-2xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-cyan-300 tracking-tight text-center border border-cyan-500/30 px-6 py-2 rounded-full bg-slate-800/50 backdrop-blur-sm">
                                 Data Analytics Engineer +1y | Microsoft Power BI Certified | Instructor + 3y
@@ -1157,7 +1198,11 @@
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<Portfolio />);
+        root.render(
+            <ErrorBoundary>
+                <Portfolio />
+            </ErrorBoundary>
+        );
     </script>
 </body>
 </html>
