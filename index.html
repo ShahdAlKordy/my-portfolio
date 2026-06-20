@@ -112,10 +112,23 @@
         // --- Exact Logic for Icons ---
         const createIconComponent = (iconName) => ({ color = "currentColor", size = 24, className = "", ...props }) => {
             try {
-                if (typeof window.lucide === 'undefined' || !window.lucide.icons || !window.lucide.icons[iconName]) {
+                if (typeof window.lucide === 'undefined') {
+                    return null;
+                }
+                
+                const iconData = (window.lucide.icons && window.lucide.icons[iconName]) || window.lucide[iconName];
+                
+                if (!iconData) {
                     return null; 
                 }
-                const iconData = window.lucide.icons[iconName];
+
+                const elementsToRender = Array.isArray(iconData) && Array.isArray(iconData[0]) 
+                    ? iconData 
+                    : (iconData[2] || iconData);
+
+                if (!Array.isArray(elementsToRender)) {
+                    return null;
+                }
 
                 return (
                     <svg
@@ -131,7 +144,7 @@
                         className={`lucide lucide-${iconName} ${className}`}
                         {...props}
                     >
-                        {iconData.map(([tag, attrs], index) => React.createElement(tag, { ...attrs, key: index }))}
+                        {elementsToRender.map(([tag, attrs], index) => React.createElement(tag, { ...attrs, key: index }))}
                     </svg>
                 );
             } catch (e) {
